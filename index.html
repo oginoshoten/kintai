@@ -357,7 +357,7 @@ input.note-inp { width: 180px; font-size: 12px; }
     <p>ç®¡ç†è€…PINã‚’å…¥åŠ›ã—ã¦ãã ã•ã„<br><span class="pin-note">ï¼ˆãƒ‡ãƒ•ã‚©ãƒ«ãƒˆ: 1234ï¼‰</span></p>
     <input class="pin-input" type="password" id="pin-input" maxlength="4" placeholder="â—â—â—â—"
       onkeyup="if(event.key==='Enter')checkPin()">
-    <div class="pin-error" id="pin-error">PINãŒæ­£ã—ãã‚ã‚Šã¾ã›ã“</div>
+    <div class="pin-error" id="pin-error">PINãŒæ­£ã—ãã‚ã‚Šã¾ã›ã‚“</div>
     <div class="modal-btns">
       <button class="btn btn-primary" onclick="checkPin()">ãƒ­ã‚°ã‚¤ãƒ³</button>
       <button class="btn" style="background:#f3f4f6;color:#374151" onclick="closePinModal()">ã‚­ãƒ£ãƒ³ã‚»ãƒ«</button>
@@ -439,7 +439,7 @@ input.note-inp { width: 180px; font-size: 12px; }
 // =============================================
 // FIREBASE CONFIG
 // â€» Firebaseã‚³ãƒ³ã‚½ãƒ¼ãƒ«ï¼ˆhttps://console.firebase.google.com/ï¼‰ã§
-//   ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆè¨­å®š > ãƒã‚¤ã‚¢ãƒ—ãƒª ã‹ã‚‰å–å¾—ã—ãŸè¨­å®™ã‚’ã“ã“ã«è²¼ã‚Šä»˜ã‘ã¦ãã ã•ã„
+//   ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆè¨­å®š > ãƒã‚¤ã‚¢ãƒ—ãƒª ã‹ã‚‰å–å¾—ã—ãŸè¨­å®šã‚’ã“ã“ã«è²¼ã‚Šä»˜ã‘ã¦ãã ã•ã„
 // =============================================
 const FIREBASE_CONFIG = {
   apiKey:            "AIzaSyD2aF51pj_aCOek70BsRJ3gsZpu9dbFKWU",
@@ -458,7 +458,7 @@ let firebaseEnabled = false;
       firebase.initializeApp(FIREBASE_CONFIG);
       db = firebase.firestore();
       firebaseEnabled = true;
-      console.log('âœ… Firebaseæ¥ç¶šå®Œäº†');
+      console.log('âœ… Firebaseæ¥ç¶šå®ŒÄº†');
     } else {
       console.info('â„¹ï¸ Firebaseæœªè¨­å®šï¼ˆãƒ­ãƒ¼ã‚«ãƒ«ä¿å­˜ãƒ¢ãƒ¼ãƒ‰ï¼‰');
     }
@@ -485,8 +485,7 @@ let employees = [
   { id:6,  name:"ç¦å³¶åƒç§‹",     hourlyRate:1150, employmentType:"ãƒ‘ãƒ¼ãƒˆ" },
   { id:7,  name:"ç«¹åœ’æ™ºå½¦",     hourlyRate:1141, employmentType:"ãƒ‘ãƒ¼ãƒˆ" },
   { id:8,  name:"æ¸…æ°´è‹¥æ±Ÿ",     hourlyRate:1150, employmentType:"ãƒ‘ãƒ¼ãƒˆ" },
-  { id:9,  name:"æ¸…æ°´æµç¾å­",   hourlyRate:1141, employmentType:"ãƒ‘ãƒ¼ãƒˆ" },
-  { id:10, name:"æ©‹æœ¬ç¾ç´—ç™»",   hourlyRate:1150, employmentType:"ãƒ‘ãƒ¼ãƒˆ" },
+  { id:9,  name:"æ¸…æ°´æµç¾å­",   hourlyRate:1141, employmentType:"ãƒ‘ãƒ¼ãƒˆ" t°(€ì¥èÄÀ°¹…µ”è‹ª&/šr³ú;Ò_fìˆ°€€¡½ÕÉ±åI…Ñ”èÄÄÔÀ°•µÁ±½åµ•¹ĞType:"ãƒ‘ãƒ¼ãƒˆ" },
   { id:11, name:"å¡©åŸç¾æ™ºå­",   hourlyRate:1141, employmentType:"ãƒ‘ãƒ¼ãƒˆ" },
   { id:12, name:"ç”°ä¸­è‰¯å­",     hourlyRate:1141, employmentType:"ãƒ‘ãƒ¼ãƒˆ" },
   { id:13, name:"æ¾æ‘åƒæµ",     hourlyRate:1141, employmentType:"ãƒ‘ãƒ¼ãƒˆ" },
@@ -982,16 +981,33 @@ function mgrLive(ds, field, value){
 // =============================================
 function renderEmpSelect(){
   document.getElementById('emp-select').innerHTML =
+    '<option value="">-- æ°åã‚’é¸æŠã—ã¦ãã ã•ã„ --</option>' +
     employees.map(e=>`<option value="${e.id}">${e.name}</option>`).join('');
 }
 function updateEmpStatus(){
   const empId = +document.getElementById('emp-select').value;
   const today = todayIso();
-  const e     = getEntry(empId, today);
   const now   = new Date();
   document.getElementById('today-date').textContent =
-    `${now.getFullYear()}òT${now.getMonth()+1}æœˆ${now.getDate()}æ—¥ï¼ˆ${DOW[now.getDay()]}ï¼‰`;
+    `${now.getFullYear()}å¹´${now.getMonth()+1}æœˆ${now.getDate()}æ—¥ï¼ˆ${DOW[now.getDay()]}ï¼‰`;
 
+  // æœªé¸æŠã®å ´åˆã¯ãƒœã‚¿ãƒ³ç„¡åŠ¹ãƒ»è¡¨ç¤ºãƒªã‚»ãƒƒãƒˆ
+  if(!empId){
+    const inEl  = document.getElementById('disp-in');
+    const outEl = document.getElementById('disp-out');
+    inEl.textContent  = '--:--'; inEl.className  = 'status-time empty';
+    outEl.textContent = '--:--'; outEl.className = 'status-time empty';
+    document.getElementById('status-badge-wrap').innerHTML =
+      `<span class="status-badge badge-none">æ°åã‚’é¸æŠã—ã¦ãã ã•ã„</span>`;
+    document.getElementById('btn-clock-in').disabled  = true;
+    document.getElementById('btn-clock-out').disabled = true;
+    document.getElementById('clock-msg').textContent  = '';
+    const noteEl = document.getElementById('emp-note');
+    if(noteEl){ noteEl.value = ''; }
+    return;
+  }
+
+  const e = getEntry(empId, today);
   const inEl  = document.getElementById('disp-in');
   const outEl = document.getElementById('disp-out');
   inEl.textContent  = e.start || '--:--';
@@ -1017,6 +1033,7 @@ function updateEmpStatus(){
 }
 function saveEmpNote(){
   const empId  = +document.getElementById('emp-select').value;
+  if(!empId){ alert('æ°åã‚’é¸æŠã—ã¦ãã ã•ã„'); return; }
   const note   = document.getElementById('emp-note').value.trim();
   const today  = todayIso();
   const now    = new Date();
@@ -1032,6 +1049,7 @@ function saveEmpNote(){
 }
 function clockIn(){
   const empId = +document.getElementById('emp-select').value;
+  if(!empId){ alert('æ°åã‚’é¸æŠã—ã¦ã‹ã‚‰æ‰“åˆ»ã—ã¦ãã ã•ã„'); return; }
   const emp   = employees.find(e=>e.id===empId);
   const now   = nowStr();
   setEntry(empId, todayIso(), 'start', now);
@@ -1040,6 +1058,7 @@ function clockIn(){
 }
 function clockOut(){
   const empId = +document.getElementById('emp-select').value;
+  if(!empId){ alert('æ°åã‚’é¸æŠã—ã¦ã‹ã‚‰æ‰“åˆ»ã—ã¦ãã ã•ã„'); return; }
   const emp   = employees.find(e=>e.id===empId);
   const now   = nowStr();
   setEntry(empId, todayIso(), 'end', now);
@@ -1157,50 +1176,44 @@ function changePin(){
   const newPin2 = document.getElementById('pin-new2').value;
   const msgEl   = document.getElementById('pin-change-msg');
 
-  if(current !== MANAGER_PIN{
+  if(current !== MANAGER_PIN){
     msgEl.style.color = '#dc2626';
-    msgEl.textContent = 'âŒ ç¾åœ¨ã®PINã­æ¯ã—ãã‚ã‚Šã¾ã›ã‚“';
+    msgEl.textContent = 'âŒ ç¾åœ¨ã®PINãŒæ­£ã—ãã‚ã‚Šã¾ã›ã‚“';
     return;
   }
   if(newPin.length < 4){
     msgEl.style.color = '#dc2626';
-    msgEl.textContent = 'âŒ æ–°ã—ã„PINã¯4ç®‡å­—ä»¥ä¸Šã«ã—ã¦ãã ã•ã„';
+    msgEl.textContent = 'âŒ æ–°ã—ã„PINã¯4æ–‡å­—ä»¥ä¸Šã«ã—ã¦ãã ã•ã„';
     return;
   }
   if(newPin !== newPin2){
     msgEl.style.color = '#dc2626';
-    msgEl.textContent = 'âŒ ––À8àeøàaS¸àc9. :!í8àeøào¸àføà¤ÉÎÂˆ™]\›ÂˆBˆPSQÑT—ÔSˆH™]Ô[ÂˆØØ[İÜ˜YÙKœÙ]][J	ÚÚ[ZWÜ[‰Ë™]Ô[ŠNÂˆØİ[Y[™Ù][[Y[RY
-	Ü[‹Xİ\œ™[	ÊK˜[YHH	ÉÎÂˆØİ[Y[™Ù][[Y[RY
-	Ü[‹[™]ÉÊK˜[YHH	ÉÎÂˆØİ[Y[™Ù][[Y[RY
-	Ü[‹[™]Ì‰ÊK˜[YHH	ÉÎÂˆ\ÙÑ[œİ[K˜ÛÛÜˆH	ÈÌM˜LÍIÎÂˆ\ÙÑ[^ÛÛ[H	ø§!HS¸à¤¹i"y¦í8àeøào¸àeøàgûï"8àê¸àëxàï8àâyo£8à ¹í«y£ xàexà£8ào¸àf{ï"IÎÂˆÙ][Y[İ]
-
-
-OOÈ\ÙÑ[^ÛÛ[H	ÉÎÈK
-NÂŸB™[˜İ[ÛˆY[\
-
-^ÂˆÛÛœİ˜[YHHØİ[Y[™Ù][[Y[RY
-	Û™]Ë[˜[YIÊK˜[YKš[J
-NÂˆÛÛœİ\HHØİ[Y[™Ù][[Y[RY
-	Û™]Ë]\IÊK˜[YNÂˆÛÛœİ˜]HH\œÙR[
-Øİ[Y[™Ù][[Y[RY
-	Û™]Ë\˜]IÊK˜[YJ_LÂˆYŠ[˜[YJ^È[\
-	ù¬#ùd#xà¤¹aiyb¦øàeøài¸àcøàh8àexàa	ÊNÈ™]\›ÈBˆ[\ŞYY\Ëœ\Ú
-ÚY›™^Y
-ÊË˜[YKİ\›T˜]Nœ˜]K[\Ş[Y[\N\_JNÂˆØ]™Q[\ŞYY\Ê
-NÂˆØİ[Y[™Ù][[Y[RY
-	Û™]Ë[˜[YIÊK˜[YHH	ÉÎÂˆØİ[Y[™Ù][[Y[RY
-	Û™]Ë\˜]IÊK˜[YHH	ÉÎÂˆ™[™\“YÜ”ÚYX˜\Š
-NÈ™[™\“YÜ‘[\
-
-NÂŸB™[˜İ[Ûˆİ\[\Y]
-Y
-^ÈY][™Ñ[\YZYÈ™[™\“YÜ‘[\
-
-NÈB™[˜İ[ÛˆØ[˜Ù[[\Y]
-
-^ÈY][™Ñ[\Y[[È™[™\“YÜ‘[\
-
-NÈB™[˜İ4ion saveEmpEdit(id){
+    msgEl.textContent = 'âŒ æ–°ã—ã„PINãŒä¸€è‡´ã—ã¾ã›ã‚“';
+    return;
+  }
+  MANAGER_PIN = newPin;
+  localStorage.setItem('kintai_pin', newPin);
+  document.getElementById('pin-current').value = '';
+  document.getElementById('pin-new').value     = '';
+  document.getElementById('pin-new2').value    = '';
+  msgEl.style.color = '#16a34a';
+  msgEl.textContent = 'âœ… PINã‚’å¤‰æ›´ã—ã¾ã—ãŸï¼ˆãƒªãƒ­ãƒ¼ãƒ‰å¾Œã‚‚ç¶­æŒã•ã‚Œã¾ã™ï¼‰';
+  setTimeout(()=>{ msgEl.textContent = ''; }, 4000);
+}
+function addEmp(){
+  const name = document.getElementById('new-name').value.trim();
+  const type = document.getElementById('new-type').value;
+  const rate = parseInt(document.getElementById('new-rate').value)||1000;
+  if(!name){ alert('æ°åã‚’å…¥åŠ›ã—ã¦ãã ã•ã„'); return; }
+  employees.push({id:nextId++, name, hourlyRate:rate, employmentType:type});
+  saveEmployees();
+  document.getElementById('new-name').value = '';
+  document.getElementById('new-rate').value = '';
+  renderMgrSidebar(); renderMgrEmp();
+}
+function startEmpEdit(id){ editingEmpId=id; renderMgrEmp(); }
+function cancelEmpEdit(){ editingEmpId=null; renderMgrEmp(); }
+function saveEmpEdit(id){
   const name = document.getElementById(`en-${id}`).value.trim();
   const type = document.getElementById(`et-${id}`).value;
   const rate = parseInt(document.getElementById(`er-${id}`).value)||0;
@@ -1222,7 +1235,7 @@ function deleteEmp(id){
 // =============================================
 function clearPeriodData(){
   const pl = periodLabel(mgrYear, mgrMonth);
-  if(!confirm(`ã€æ³¨æ„ã€‘${pl} ã®å…¨ç¤¾å“¡ã®å‹¤æ€ ãƒ‡ãƒ¼ã‚¿ã‚’å‰Šé™¤ã—ã¾ã™ã€‚\nExcelå‡ºåŠ›å¾Œã«è¡Œã£ã¦ãã ã•ã„ã€‚\n\nã‚ˆã‚ã—ã„ã§ã™ãŠï¼Ÿ`)) return;
+  if(!confirm(`ã€æ³¨æ„ã€‘${pl} ã®å…¨ç¤¾å“¡ã®å‹¤æ€ ãƒ‡ãƒ¼ã‚¿ã‚’å‰Šé™¤ã—ã¾ã™ã€‚\nExcelå‡ºåŠ›å¾Œã«è¡Œã£ã¦ãã ã•ã„ã€‚\n\nã‚ˆã‚ã—ã„ã§ã™ã‹ï¼Ÿ`)) return;
   const days = getDays(mgrYear, mgrMonth);
   employees.forEach(emp=>{
     days.forEach(d=>{
@@ -1252,7 +1265,7 @@ function exportExcel(){
         // ç¤¾å“¡ã‚·ãƒ¼ãƒˆ: æ®‹æ¥­æ™‚é–“åˆ—ã‚ã‚Šã€ä¼‘æ†©ãªã—
         const wsData = [
           ['å‹¤æ€ é›†è¨ˆè¡¨'],
-          ['é›†è¨ˆæœŸé–“', pl, '', 'æ°å', emp.name, '', 'é›‡ç”¨å½¢æ…‹', 'ä¾å“¡'],
+          ['é›†è¨ˆæœŸé–“', pl, '', 'æ°å', emp.name, '', 'é›‡ç”¨å½¢æ…‹', 'ç¤¾å“¡'],
           [],
           ['æ—¥ä»˜','æ›œæ—¥','å‡ºå‹¤æ™‚é–“','ä¸¸ã‚å¾Œå‡ºå‹¤','é€€å‹¤æ™‚é–“','ä¸¸ã‚å¾Œé€€å‹¤','ç¨¼åƒæ™‚é–“(h)','æ®‹æ¥­æ™‚é–“(h)','å‚™è€ƒ'],
         ];
