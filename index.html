@@ -89,13 +89,14 @@ body { font-family: 'Meiryo', 'Yu Gothic', sans-serif; background: #f0f4f8; min-
 .name-btn:hover { border-color: #10b981; background: #f0fdf4; }
 .name-btn:active { transform: scale(0.97); }
 
-.btn-move {
-  background: #f3f4f6; border: 1px solid #d1d5db; color: #374151;
-  padding: 3px 8px; border-radius: 4px; font-size: 14px; cursor: pointer;
-  margin-left: 3px; line-height: 1;
+.drag-handle {
+  cursor: grab; color: #9ca3af; font-size: 20px; padding: 4px 10px;
+  user-select: none; display: inline-block; line-height: 1;
 }
-.btn-move:hover:not(:disabled) { background: #e5e7eb; }
-.btn-move:disabled { opacity: 0.25; cursor: not-allowed; }
+.drag-handle:active { cursor: grabbing; }
+.drag-handle-cell { width: 32px; padding: 0 !important; text-align: center; }
+tr.drag-over td { background: #dbeafe !important; }
+tr.dragging { opacity: 0.4; }
 
 .status-card {
   width: 100%; max-width: 440px; background: white;
@@ -178,8 +179,7 @@ select:focus, input:focus { border-color: #1e3a5f; }
 .period-label { font-size: 13px; color: #6b7280; background: #f3f4f6; padding: 7px 14px; border-radius: 6px; font-weight: 500; }
 
 /* Buttons */
-.btn { border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; padding: 8px 18px; transition: opacity 0.2s;
-}
+.btn { border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; padding: 8px 18px; transition: opacity 0.2s; }
 .btn:hover { opacity: 0.85; }
 .btn-primary { background: #1e3a5f; color: white; }
 .btn-success { background: #16a34a; color: white; }
@@ -369,8 +369,8 @@ input.note-inp { width: 180px; font-size: 12px; }
 
 <!-- TOP -->
 <div class="top-screen" id="screen-top">
-  <div class="top-logo">🕐 勤怠管理</div>
-  <div class="top-subtitle">あなたの役割を選んでください</div>
+  <div class="top-logo">🕐 勤怠管理システム</div>
+  <div class="top-subtitle">あどたの役割を選んでください</div>
   <div class="role-cards">
     <div class="role-card emp" onclick="goNameScreen()">
       <div class="icon">👤</div>
@@ -392,7 +392,7 @@ input.note-inp { width: 180px; font-size: 12px; }
     <p>管理者PINを入力してください<br><span class="pin-note">（デフォルト: 1234）</span></p>
     <input class="pin-input" type="password" id="pin-input" maxlength="4" placeholder="●●●●"
       onkeyup="if(event.key==='Enter')checkPin()">
-    <div class="pin-error" id="pin-error">PINが正しくあらませこ</div>
+    <div class="pin-error" id="pin-error">PINが正しくありませこ</div>
     <div class="modal-btns">
       <button class="btn btn-primary" onclick="checkPin()">ログイン</button>
       <button class="btn" style="background:#f3f4f6;color:#374151" onclick="closePinModal()">キャンセル</button>
@@ -557,7 +557,7 @@ let editingEmpId  = null;
 // =============================================
 // LOCAL STORAGE + FIREBASE SYNC
 // =============================================
-// localStorageラップ（iOS Safariのfile://などでも落ちないよう）
+// localStorageラップ（iOS Safariのfile://なでも落ちないよう）
 function _lsGet(key){ try{ return localStorage.getItem(key); }catch(e){ return null; } }
 function _lsSet(key, val){ try{ localStorage.setItem(key, val); }catch(e){ /* 保存不可環境では無視 */ } }
 
@@ -589,7 +589,7 @@ async function _cloudSaveEmployees() {
   try {
     await db.collection('kintai').doc('employees').set({
       data: JSON.stringify(employees),
-      nextId: nextId,
+      nextId: ne nextId,
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     });
   } catch(e) { console.warn('Firestore employees保存失敗:', e); }
@@ -641,7 +641,7 @@ function startFirebaseSync() {
     if (doc.exists) {
       try {
         const cloudData = JSON.parse(doc.data().data);
-        // クラウドデータをローカルにマージ（クラウド優先）
+        // クラウドデータをローカルにユージ（クラウド優先）
         entries = Object.assign({}, entries, cloudData);
         _lsSet('kintai_entries', JSON.stringify(entries));
         // 表示中なら再レンダリング
@@ -844,7 +844,8 @@ function mgrTab(tab){
   else             renderMgrEmp();
 }
 function renderMgrSidebar(){
-  document.getElementById('mgr-sidebar-list').innerHTML = employees.map(e=>{
+  const sorted = [...employees].sort((a,b)=>(a.sortOrder??999)-(b.sortOrder??999));
+  document.getElementById('mgr-sidebar-list').innerHTML = sorted.map(e=>{
     const isShain = e.employmentType === '社員';
     const subLine = isShain
       ? `<span class="sbt tag-shain">社員</span>`
@@ -868,53 +869,7 @@ function renderMgrData(){
 
   // テーブルヘッダ（社員/パートで異なる）
   // パート: 日付|曜|出勤|丸め|退勤|丸め|休憩|稼働|備考 = 9列
-  // 社員:   日付|曜|出勤|丸め|退勤|丸め|稼働|残業|備考 = 9列
-  const headerExtra = isShain
-    ? `<th>稼働時間</th><th style="color:#dc2626">残業(h)</th>`
-    : `<th>休憩(h)</th><th>稼働時間</th>`;
-
-  const trs = rows.map(({d, ds, start, end, breakHours, rs, re, wh, ot, autoB, note})=>{
-    const dow = d.getDay(), isW = dow===0||dow===6;
-    const dc  = dow===0?'dow-sun':dow===6?'dow-sat':'';
-    const whHtml = wh>0
-      ? `<span class="work-h">${wh.toFixed(2)}</span>`
-      : `<span class="work-z">-</span>`;
-    const isNewMonth = d.getDate()===1;
-    const rowStyle   = isNewMonth ? 'border-top:2px solid #cbd5e1;' : '';
-
-    // 休憩セル or 残業セル
-    let midCells;
-    if(isShain){
-      const otHtml = ot>0 ? `<span class="ot-val">${ot.toFixed(2)}</span>` : `<span class="ot-z">-</span>`;
-      midCells = `<td id="mwh-${ds}">${whHtml}</td><td id="mot-${ds}">${otHtml}</td>`;
-    } else {
-      let brkCell;
-      if(autoB){
-        brkCell = `<td id="mbrk-${ds}"><span class="auto-brk">1.00<br>(自動)</span></td>`;
-      } else {
-        brkCell = `<td id="mbrk-${ds}"><input type="number" class="break-inp" step="0.5" min="0" max="12" placeholder="0" value="${breakHours||''}" oninput="mgrLive('${ds}','breakHours',this.value)"></td>`;
-      }
-      midCells = `${brkCell}<td id="mwh-${ds}">${whHtml}</td>`;
-    }
-
-    return `<tr class="${isW?'wknd':''}" style="${rowStyle}">
-      <td class="left">${d.getMonth()+1}/${d.getDate()}</td>
-      <td class="${dc}">${DOW[dow]}</td>
-      <td><input type="time" value="${start}" oninput="mgrLive('${ds}','start',this.value)"></td>
-      <td><span class="rounded-lbl" id="mrs-${ds}">${rs}</span></td>
-      <td><input type="time" value="${end}"  oninput="mgrLive('${ds}','end',this.value)"></td>
-      <td><span class="rounded-lbl" id="mre-${ds}">${re}</span></td>
-      ${midCells}
-      <td><input type="text" class="note-inp" placeholder="備考" value="${note.replace(/"/g,'&quot;')}" oninput="mgrLive('${ds}','note',this.value)"></td>
-    </tr>`;
-  }).join('');
-
-  // バナー右側
-  const bannerRight = isShain
-    ? `合計稼働: <strong id="mgr-total-h">${fmtH(total)}</strong>
-       &nbsp;&nbsp;残業: <span class="banner-ot" id="mgr-total-ot">${fmtH(totalOT)}</span>`
-    : `合計稼働: <strong id="mgr-total-h">${fmtH(total)}</strong>
-       &nbsp;&nbsp;給与: <span class="banner-salary" id="mgr-total-s">${fmtY(salary)}</span>`;
+  // 社員:   �<fz^i���X{�X�G�K��8(ΘX�G�K��8(�Z�.j[8��)��[Pc��X�p�6��7B�VFW$W�G&��56�����F��z��X8�i�.�i3��F���F�7G��S�&6���#�6F3#c#b#�j�jZ҆����F�� ���F��K�hj������F���F��z��X8�i�.�i3��F�����6��7BG'2�&�w2�����B�G2�7F'B�V�B�'&V���W'2�'2�&R�v���B�WF�"���FWғ�簢6��7BF�r�B�vWDF�����5r�F�s�����F�s���c��6��7BF2�F�s����vF�r�7V�s�F�s���c�vF�r�6Bs�rs��6��7Bv��F���v�� ���7�6�73�'v�&�ւ#�G�v��F�f��VB�"����7�� ���7�6�73�'v�&�ע#����7����6��7B�4�Wt���F��B�vWDFFR�������6��7B&�u7G��R��4�Wt���F��v&�&FW"�F��'�6�ƖB66&CVS�r�rs�����K�hj�8+�8:��"j�jZ�8+�8:���WB֖D6V��3���b��56��◰�6��7B�D�F����C���7�6�73�&�B�f�#�G��B�F�f��VB�"����7����7�6�73�&�Bע#����7����֖D6V��2��FB�C�&�v��G�G7�#�G�v��F�����FC��FB�C�&��B�G�G7�#�G��D�F�����FC����V�6R���WB'&�6V�ð��b�WF�"���'&�6V����FB�C�&�'&��G�G7�#��7�6�73�&WF��'&�#���'#⎈z�X�R���7����FC����V�6R��'&�6V����FB�C�&�'&��G�G7�#�Ɩ�WBG�S�&�V�&W""6�73�&'&V�֖�"7FW�#�R"֖��#"���#""�6V���FW#�#"f�VS�"G�'&V���W'7��rw�"���WC�&�w$ƗfR�rG�G7�r�v'&V���W'2r�F��2�f�VR�#���FC���Т֖D6V��2�G�'&�6V����FB�C�&�v��G�G7�#�G�v��F�����FC���Р�&WGW&��G"6�73�"G��5s�wv��Bs�rw�"7G��S�"G�&�u7G��W�#��FB6�73�&�VgB#�G�B�vWD���F������G�B�vWDFFR�����FC��FB6�73�"G�F7�#�G�D�u�F�u����FC��FC�Ɩ�WBG�S�'F��R"f�VS�"G�7F'G�"���WC�&�w$ƗfR�rG�G7�r�w7F'Br�F��2�f�VR�#���FC��FC��7�6�73�'&�V�FVB��&�"�C�&�'2�G�G7�#�G�'7���7����FC��FC�Ɩ�WBG�S�'F��R"f�VS�"G�V�G�"���WC�&�w$ƗfR�rG�G7�r�vV�Br�F��2�f�VR�#���FC��FC��7�6�73�'&�V�FVB��&�"�C�&�&R�G�G7�#�G�&W���7����FC�G�֖D6V��7Т�FC�Ɩ�WBG�S�'FW�B"6�73�&��FR֖�"�6V���FW#�.X)��2"f�VS�"G���FR�&W�6R��"�r�rgV�C�r��"���WC�&�w$ƗfR�rG�G7�r�v��FRr�F��2�f�VR�#���FC���G#���Ғ����rr������8988�8;�X�>X@�6��7B&��W%&�v�B��56����Y����z��X8Ӣ�7G&��r�C�&�w"�F�F�ւ#�G�f�D��F�F���7G&��s�f�'7�f�'7�j�jZӢ�7�6�73�&&��W"��B"�C�&�w"�F�F���B#�G�f�D��F�F��B����7�� ��Y����z��X8Ӣ�7G&��r�C�&�w"�F�F�ւ#�G�f�D��F�F���7G&��s�f�'7�f�'7�{ZnK���7�6�73�&&��W"�6�'�"�C�&�w"�F�F��2#�G�f�E��6�'��salary)}</span>`;
 
   // フッター（両者とも9列）
   // パート: colspan=7→稼働値→備考空
@@ -1067,7 +1022,7 @@ function updateEmpStatus(){
   const today = todayIso();
   const now   = new Date();
   document.getElementById('today-date').textContent =
-    `${now.getFullYear()}ڹ�${now.getMonth()+1}月${now.getDate()}日（${DOW[now.getDay()]}）`;
+    `${now.getFullYear()}�T${now.getMonth()+1}月${now.getDate()}日（${DOW[now.getDay()]}）`;
 
   // 未選択の場合はボタン無効・表示リセット
   if(!empId){
@@ -1153,7 +1108,7 @@ function showPunchSuccess(name, type, time){
       `<span style="font-size:13px;color:#9ca3af">${count}秒後にトップ画面に戻ります...</span>`;
   }
   update();
-  // ボタンを無効化してカウンダウン
+  // ボタンを無効化してカウントダウン
   document.getElementById('btn-clock-in').disabled  = true;
   document.getElementById('btn-clock-out').disabled = true;
   const timer = setInterval(()=>{
@@ -1170,11 +1125,11 @@ function showPunchSuccess(name, type, time){
 // =============================================
 function renderMgrEmp(){
   const sorted = [...employees].sort((a,b)=>(a.sortOrder??999)-(b.sortOrder??999));
-  const rows = sorted.map((emp, idx) => {
+  const rows = sorted.map((emp) => {
     const isShain = emp.employmentType === '社員';
-    const isFirst = idx === 0, isLast = idx === sorted.length - 1;
     if(editingEmpId===emp.id) return `
-      <tr>
+      <tr draggable="true" data-id="${emp.id}">
+        <td class="drag-handle-cell"><span class="drag-handle">⠿</span></td>
         <td class="left"><input id="en-${emp.id}" value="${emp.name}" style="width:140px"></td>
         <td><select id="et-${emp.id}">
           <option value="パート" ${emp.employmentType==='パート'?'selected':''}>パート</option>
@@ -1182,32 +1137,26 @@ function renderMgrEmp(){
         </select></td>
         <td><input id="er-${emp.id}" type="number" value="${emp.hourlyRate}" style="width:90px" ${isShain?'disabled':''}></td>
         <td style="text-align:right">
-          <button class="btn-move" onclick="moveEmpUp(${emp.id})" ${isFirst?'disabled':''}>↑</button>
-          <button class="btn-move" onclick="moveEmpDown(${emp.id})" ${isLast?'disabled':''}>↓</button>
-          <button class="btn-sm btn-save" onclick="saveEmpEdit(${emp.id})" style="margin-left:6px">保存</button>
+          <button class="btn-sm btn-save" onclick="saveEmpEdit(${emp.id})">保存</button>
           <button class="btn-sm" style="background:#f3f4f6;color:#374151;margin-left:4px" onclick="cancelEmpEdit()">キャンセル</button>
         </td>
       </tr>`;
     return `
-      <tr>
+      <tr draggable="true" data-id="${emp.id}">
+        <td class="drag-handle-cell"><span class="drag-handle">⠿</span></td>
         <td class="left">${emp.name}</td>
         <td>${emp.employmentType||'パート'}</td>
         <td>${isShain ? '-' : '¥'+emp.hourlyRate.toLocaleString()}</td>
         <td style="text-align:right">
-          <button class="btn-move" onclick="moveEmpUp(${emp.id})" ${isFirst?'disabled':''}>↑</button>
-          <button class="btn-move" onclick="moveEmpDown(${emp.id})" ${isLast?'disabled':''}>↓</button>
-          <button class="btn-sm btn-edit" onclick="startEmpEdit(${emp.id})" style="margin-left:6px">編集</button>
+          <button class="btn-sm btn-edit" onclick="startEmpEdit(${emp.id})">編集</button>
           <button class="btn-sm btn-del"  onclick="deleteEmp(${emp.id})" style="margin-left:4px">削除</button>
         </td>
       </tr>`;
   }).join('');
 
-  const sheetNote = '';
-
   document.getElementById('mgr-view-emp').innerHTML = `
     <div class="emp-mgmt-wrap">
       <h2 style="font-size:16px;font-weight:bold;margin-bottom:16px">社員管理</h2>
-      ${sheetNote}
       <div class="card" style="border-left:4px solid #3b82f6">
         <h3>🔐 管理者PINの変更</h3>
         <div class="add-form" style="align-items:flex-end; gap:12px; flex-wrap:wrap">
@@ -1244,15 +1193,62 @@ function renderMgrEmp(){
       <div class="card" style="padding:0">
         <table>
           <thead><tr>
+            <th style="width:32px"></th>
             <th class="left" style="padding:10px 16px">氏名</th>
             <th class="left">雇用形態</th>
             <th class="left">時給</th>
-            <th style="text-align:right;padding-right:16px">順序 / 操作</th>
+            <th style="text-align:right;padding-right:16px">操作</th>
           </tr></thead>
           <tbody>${rows}</tbody>
         </table>
       </div>
     </div>`;
+  initEmpDrag();
+}
+function initEmpDrag(){
+  const tbody = document.querySelector('#mgr-view-emp tbody');
+  if(!tbody) return;
+  let dragSrc = null;
+  tbody.querySelectorAll('tr[draggable]').forEach(tr => {
+    tr.addEventListener('dragstart', e => {
+      dragSrc = tr;
+      tr.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', tr.dataset.id);
+    });
+    tr.addEventListener('dragend', () => {
+      tr.classList.remove('dragging');
+      tbody.querySelectorAll('tr').forEach(r => r.classList.remove('drag-over'));
+    });
+    tr.addEventListener('dragover', e => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      tbody.querySelectorAll('tr').forEach(r => r.classList.remove('drag-over'));
+      if(tr !== dragSrc) tr.classList.add('drag-over');
+    });
+    tr.addEventListener('dragleave', () => {
+      tr.classList.remove('drag-over');
+    });
+    tr.addEventListener('drop', e => {
+      e.preventDefault();
+      if(!dragSrc || dragSrc === tr) return;
+      const trs = Array.from(tbody.querySelectorAll('tr[data-id]'));
+      const ids = trs.map(r => parseInt(r.dataset.id));
+      const fromIdx = ids.indexOf(parseInt(dragSrc.dataset.id));
+      const toIdx   = ids.indexOf(parseInt(tr.dataset.id));
+      if(fromIdx < 0 || toIdx < 0) return;
+      ids.splice(fromIdx, 1);
+      ids.splice(toIdx, 0, parseInt(dragSrc.dataset.id));
+      ids.forEach((id, i) => {
+        const emp = employees.find(e => e.id === id);
+        if(emp) emp.sortOrder = i + 1;
+      });
+      saveEmployees();
+      renderMgrEmp();
+      renderMgrSidebar();
+      renderEmpSelect();
+    });
+  });
 }
 function changePin(){
   const current = document.getElementById('pin-current').value;
@@ -1308,7 +1304,7 @@ function saveEmpEdit(id){
   editingEmpId=null; renderMgrSidebar(); renderMgrEmp();
 }
 function deleteEmp(id){
-  if(!confirm('この社員を削除しますお？')) return;
+  if(!confirm('この社員を削除しますか？')) return;
   employees = employees.filter(e=>e.id!==id);
   saveEmployees();
   if(mgrEmpId===id && employees.length) mgrEmpId=employees[0].id;
@@ -1338,7 +1334,7 @@ function moveEmpDown(id){
 // =============================================
 function clearPeriodData(){
   const pl = periodLabel(mgrYear, mgrMonth);
-  if(!confirm(`【注意】${pl} の全社員の勤怠データを削除します。\nExcel出力後に行ってください。\n\nよろしいですお？`)) return;
+  if(!confirm(`【注意】${pl} の全社員の勤怠データを削除します。\nExcel出力後に行ってください。\n\nよろしいですか？`)) return;
   const days = getDays(mgrYear, mgrMonth);
   employees.forEach(emp=>{
     days.forEach(d=>{
@@ -1389,7 +1385,7 @@ function exportExcel(){
           ]);
         });
         wsData.push([]);
-        wsData.push(['','','','','','%, 合計稼働時間', Math.round(tot*100)/100,'','']);
+        wsData.push(['','','','','','合計稼働時間', Math.round(tot*100)/100,'','']);
         wsData.push(['','','','','','合計残業時間','',Math.round(totOT*100)/100,'']);
         const ws = XLSX.utils.aoa_to_sheet(wsData);
         ws['!cols'] = [{wch:8},{wch:4},{wch:10},{wch:10},{wch:10},{wch:10},{wch:12},{wch:12},{wch:24}];
@@ -1450,7 +1446,7 @@ function exportExcel(){
     wsSum['!cols'] = [{wch:16},{wch:8},{wch:10},{wch:16},{wch:12},{wch:14}];
     XLSX.utils.book_append_sheet(wb, wsSum, 'サマリー');
 
-    XLSX.writeFile(wb, `勤怠集計_${mgrYear}年${mgrMonth}月25日締め.xlsx`);
+    XLSX.writeFile(wb, `勤怠集計_${mgrYear}年${mgrMonth}月25f��締め.xlsx`);
   } catch(err){ alert('Excel出力エラー: '+err.message); console.error(err); }
 }
 
