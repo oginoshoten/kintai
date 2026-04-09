@@ -89,6 +89,14 @@ body { font-family: 'Meiryo', 'Yu Gothic', sans-serif; background: #f0f4f8; min-
 .name-btn:hover { border-color: #10b981; background: #f0fdf4; }
 .name-btn:active { transform: scale(0.97); }
 
+.btn-move {
+  background: #f3f4f6; border: 1px solid #d1d5db; color: #374151;
+  padding: 3px 8px; border-radius: 4px; font-size: 14px; cursor: pointer;
+  margin-left: 3px; line-height: 1;
+}
+.btn-move:hover:not(:disabled) { background: #e5e7eb; }
+.btn-move:disabled { opacity: 0.25; cursor: not-allowed; }
+
 .status-card {
   width: 100%; max-width: 440px; background: white;
   border-radius: 14px; padding: 20px; margin-bottom: 24px;
@@ -170,7 +178,8 @@ select:focus, input:focus { border-color: #1e3a5f; }
 .period-label { font-size: 13px; color: #6b7280; background: #f3f4f6; padding: 7px 14px; border-radius: 6px; font-weight: 500; }
 
 /* Buttons */
-.btn { border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; padding: 8px 18px; transition: opacity 0.2s; }
+.btn { border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; padding: 8px 18px; transition: opacity 0.2s;
+}
 .btn:hover { opacity: 0.85; }
 .btn-primary { background: #1e3a5f; color: white; }
 .btn-success { background: #16a34a; color: white; }
@@ -360,8 +369,8 @@ input.note-inp { width: 180px; font-size: 12px; }
 
 <!-- TOP -->
 <div class="top-screen" id="screen-top">
-  <div class="top-logo">🕐 勤怠管理システム</div>
-  <div class="top-subtitle">あどたの役割を選んでください</div>
+  <div class="top-logo">🕐 勤怠管理</div>
+  <div class="top-subtitle">あなたの役割を選んでください</div>
   <div class="role-cards">
     <div class="role-card emp" onclick="goNameScreen()">
       <div class="icon">👤</div>
@@ -383,7 +392,7 @@ input.note-inp { width: 180px; font-size: 12px; }
     <p>管理者PINを入力してください<br><span class="pin-note">（デフォルト: 1234）</span></p>
     <input class="pin-input" type="password" id="pin-input" maxlength="4" placeholder="●●●●"
       onkeyup="if(event.key==='Enter')checkPin()">
-    <div class="pin-error" id="pin-error">PINが正しくあらません</div>
+    <div class="pin-error" id="pin-error">PINが正しくあらませこ</div>
     <div class="modal-btns">
       <button class="btn btn-primary" onclick="checkPin()">ログイン</button>
       <button class="btn" style="background:#f3f4f6;color:#374151" onclick="closePinModal()">キャンセル</button>
@@ -515,24 +524,24 @@ let MANAGER_PIN    = localStorage.getItem('kintai_pin') || "1234";
 // =============================================
 // デフォルト社員リスト（スプレッドシート読み込み失敗時のフォールバック）
 let employees = [
-  { id:1,  name:"島野典子",     hourlyRate:1200, employmentType:"パート" },
-  { id:2,  name:"小野田佐知子", hourlyRate:1200, employmentType:"パート" },
-  { id:3,  name:"大久保江利",   hourlyRate:1150, employmentType:"パート" },
-  { id:4,  name:"新井豊子",     hourlyRate:1180, employmentType:"パート" },
-  { id:5,  name:"西沢敏子",     hourlyRate:1150, employmentType:"パート" },
-  { id:6,  name:"福島千秋",     hourlyRate:1150, employmentType:"パート" },
-  { id:7,  name:"竹園智彦",     hourlyRate:1141, employmentType:"パート" },
-  { id:8,  name:"清水若江",     hourlyRate:1150, employmentType:"パート" },
-  { id:9,  name:"清水恵美子",   hourlyRate:1141, employmentType:"パート" },
-  { id:10, name:"橋本美紗登",   hourlyRate:1150, employmentType:"パート" },
-  { id:11, name:"塩原美智子",   hourlyRate:1141, employmentType:"パート" },
-  { id:12, name:"田中良子",     hourlyRate:1141, employmentType:"パート" },
-  { id:13, name:"松村千恵",     hourlyRate:1141, employmentType:"パート" },
-  { id:14, name:"西島雅美",     hourlyRate:1141, employmentType:"パート" },
-  { id:15, name:"吉川みどり",   hourlyRate:1150, employmentType:"パート" },
-  { id:16, name:"清水裕美",     hourlyRate:1141, employmentType:"パート" },
-  { id:17, name:"松崎冴子",     hourlyRate:0,    employmentType:"社員" },
-  { id:18, name:"笠原未緒",     hourlyRate:0,    employmentType:"社員" },
+  { id:1,  name:"島野典子",     hourlyRate:1200, employmentType:"パート", sortOrder:1  },
+  { id:2,  name:"小野田佐知子", hourlyRate:1200, employmentType:"パート", sortOrder:2  },
+  { id:3,  name:"大久保江利",   hourlyRate:1150, employmentType:"パート", sortOrder:3  },
+  { id:4,  name:"新井豊子",     hourlyRate:1180, employmentType:"パート", sortOrder:4  },
+  { id:5,  name:"西沢敏子",     hourlyRate:1150, employmentType:"パート", sortOrder:5  },
+  { id:6,  name:"福島千秋",     hourlyRate:1150, employmentType:"パート", sortOrder:6  },
+  { id:7,  name:"竹園智彦",     hourlyRate:1141, employmentType:"パート", sortOrder:7  },
+  { id:8,  name:"清水若江",     hourlyRate:1150, employmentType:"パート", sortOrder:8  },
+  { id:9,  name:"清水恵美子",   hourlyRate:1141, employmentType:"パート", sortOrder:9  },
+  { id:10, name:"橋本美紗登",   hourlyRate:1150, employmentType:"パート", sortOrder:10 },
+  { id:11, name:"塩原美智子",   hourlyRate:1141, employmentType:"パート", sortOrder:11 },
+  { id:12, name:"田中良子",     hourlyRate:1141, employmentType:"パート", sortOrder:12 },
+  { id:13, name:"松村千恵",     hourlyRate:1141, employmentType:"パート", sortOrder:13 },
+  { id:14, name:"西島雅美",     hourlyRate:1141, employmentType:"パート", sortOrder:14 },
+  { id:15, name:"吉川みどり",   hourlyRate:1150, employmentType:"パート", sortOrder:15 },
+  { id:16, name:"清水裕美",     hourlyRate:1141, employmentType:"パート", sortOrder:16 },
+  { id:17, name:"松崎冴子",     hourlyRate:0,    employmentType:"社員",   sortOrder:17 },
+  { id:18, name:"笠原未緒",     hourlyRate:0,    employmentType:"社員",   sortOrder:18 },
 ];
 let nextId = 19;
 
@@ -612,6 +621,8 @@ function loadEmployees(){
       const parsed = JSON.parse(saved);
       if(parsed && parsed.length > 0){
         employees = parsed;
+        // sortOrderが未設定の既存データに順番を付与
+        employees.forEach((e, i) => { if(e.sortOrder == null) e.sortOrder = i + 1; });
         nextId = savedId ? parseInt(savedId) : employees.reduce((m,e)=>Math.max(m,e.id),0) + 1;
       }
     }
@@ -718,7 +729,7 @@ function getDays(year, closingMonth){
 function periodLabel(year, closingMonth){
   const pm = closingMonth === 1 ? 12 : closingMonth - 1;
   const py = closingMonth === 1 ? year - 1 : year;
-  return `${py}�${pm}月26日 〜 ${year}年${closingMonth}月25日`;
+  return `${py}年${pm}月26日 〜 ${year}年${closingMonth}月25日`;
 }
 function ceilTo30(t){
   if(!t) return "";
@@ -1036,13 +1047,14 @@ function mgrLive(ds, field, value){
 // EMPLOYEE SCREEN
 // =============================================
 function renderEmpSelect(){
+  const sorted = [...employees].sort((a,b)=>(a.sortOrder??999)-(b.sortOrder??999));
   // hidden select（打刻画面の関数との互換性のため保持）
   document.getElementById('emp-select').innerHTML =
     '<option value=""></option>' +
-    employees.map(e=>`<option value="${e.id}">${e.name}</option>`).join('');
-  // 名前ボタンを上部に表示
+    sorted.map(e=>`<option value="${e.id}">${e.name}</option>`).join('');
+  // 名前ボタンをsortOrder順に表示
   document.getElementById('name-list').innerHTML =
-    employees.map(e =>
+    sorted.map(e =>
       `<button class="name-btn" onclick="selectNameAndGo(${e.id})">${e.name}</button>`
     ).join('');
 }
@@ -1055,7 +1067,7 @@ function updateEmpStatus(){
   const today = todayIso();
   const now   = new Date();
   document.getElementById('today-date').textContent =
-    `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日（${DOW[now.getDay()]}）`;
+    `${now.getFullYear()}ڹ�${now.getMonth()+1}月${now.getDate()}日（${DOW[now.getDay()]}）`;
 
   // 未選択の場合はボタン無効・表示リセット
   if(!empId){
@@ -1091,7 +1103,7 @@ function updateEmpStatus(){
   document.getElementById('btn-clock-out').disabled = !e.start || !!e.end;
   document.getElementById('clock-msg').textContent  = '';
 
-  // 伝達メモを読み込　（社員切り替え時もリセット）
+  // 伝達メモを読み込む（社員切り替え時もリセット）
   const noteEl = document.getElementById('emp-note');
   if(noteEl){ noteEl.value = e.note || ''; }
   const savedEl = document.getElementById('emp-note-saved');
@@ -1141,7 +1153,7 @@ function showPunchSuccess(name, type, time){
       `<span style="font-size:13px;color:#9ca3af">${count}秒後にトップ画面に戻ります...</span>`;
   }
   update();
-  // ボタンを無効化してカウントダウン
+  // ボタンを無効化してカウンダウン
   document.getElementById('btn-clock-in').disabled  = true;
   document.getElementById('btn-clock-out').disabled = true;
   const timer = setInterval(()=>{
@@ -1157,8 +1169,10 @@ function showPunchSuccess(name, type, time){
 // EMPLOYEE MANAGEMENT
 // =============================================
 function renderMgrEmp(){
-  const rows = employees.map(emp => {
+  const sorted = [...employees].sort((a,b)=>(a.sortOrder??999)-(b.sortOrder??999));
+  const rows = sorted.map((emp, idx) => {
     const isShain = emp.employmentType === '社員';
+    const isFirst = idx === 0, isLast = idx === sorted.length - 1;
     if(editingEmpId===emp.id) return `
       <tr>
         <td class="left"><input id="en-${emp.id}" value="${emp.name}" style="width:140px"></td>
@@ -1168,8 +1182,10 @@ function renderMgrEmp(){
         </select></td>
         <td><input id="er-${emp.id}" type="number" value="${emp.hourlyRate}" style="width:90px" ${isShain?'disabled':''}></td>
         <td style="text-align:right">
-          <button class="btn-sm btn-save" onclick="saveEmpEdit(${emp.id})">保存</button>
-          <button class="btn-sm" style="background:#f3f4f6;color:#374151;margin-left:6px" onclick="cancelEmpEdit()">キャンセル</button>
+          <button class="btn-move" onclick="moveEmpUp(${emp.id})" ${isFirst?'disabled':''}>↑</button>
+          <button class="btn-move" onclick="moveEmpDown(${emp.id})" ${isLast?'disabled':''}>↓</button>
+          <button class="btn-sm btn-save" onclick="saveEmpEdit(${emp.id})" style="margin-left:6px">保存</button>
+          <button class="btn-sm" style="background:#f3f4f6;color:#374151;margin-left:4px" onclick="cancelEmpEdit()">キャンセル</button>
         </td>
       </tr>`;
     return `
@@ -1178,8 +1194,10 @@ function renderMgrEmp(){
         <td>${emp.employmentType||'パート'}</td>
         <td>${isShain ? '-' : '¥'+emp.hourlyRate.toLocaleString()}</td>
         <td style="text-align:right">
-          <button class="btn-sm btn-edit" onclick="startEmpEdit(${emp.id})">編集</button>
-          <button class="btn-sm btn-del"  onclick="deleteEmp(${emp.id})" style="margin-left:6px">削除</button>
+          <button class="btn-move" onclick="moveEmpUp(${emp.id})" ${isFirst?'disabled':''}>↑</button>
+          <button class="btn-move" onclick="moveEmpDown(${emp.id})" ${isLast?'disabled':''}>↓</button>
+          <button class="btn-sm btn-edit" onclick="startEmpEdit(${emp.id})" style="margin-left:6px">編集</button>
+          <button class="btn-sm btn-del"  onclick="deleteEmp(${emp.id})" style="margin-left:4px">削除</button>
         </td>
       </tr>`;
   }).join('');
@@ -1229,7 +1247,7 @@ function renderMgrEmp(){
             <th class="left" style="padding:10px 16px">氏名</th>
             <th class="left">雇用形態</th>
             <th class="left">時給</th>
-            <th style="text-align:right;padding-right:16px">操作</th>
+            <th style="text-align:right;padding-right:16px">順序 / 操作</th>
           </tr></thead>
           <tbody>${rows}</tbody>
         </table>
@@ -1271,7 +1289,8 @@ function addEmp(){
   const type = document.getElementById('new-type').value;
   const rate = parseInt(document.getElementById('new-rate').value)||1000;
   if(!name){ alert('氏名を入力してください'); return; }
-  employees.push({id:nextId++, name, hourlyRate:rate, employmentType:type});
+  const maxOrder = employees.reduce((m,e)=>Math.max(m,e.sortOrder??0),0);
+  employees.push({id:nextId++, name, hourlyRate:rate, employmentType:type, sortOrder:maxOrder+1});
   saveEmployees();
   document.getElementById('new-name').value = '';
   document.getElementById('new-rate').value = '';
@@ -1289,11 +1308,29 @@ function saveEmpEdit(id){
   editingEmpId=null; renderMgrSidebar(); renderMgrEmp();
 }
 function deleteEmp(id){
-  if(!confirm('この社員を削除しますか？')) return;
+  if(!confirm('この社員を削除しますお？')) return;
   employees = employees.filter(e=>e.id!==id);
   saveEmployees();
   if(mgrEmpId===id && employees.length) mgrEmpId=employees[0].id;
   renderMgrSidebar(); renderMgrEmp();
+}
+function moveEmpUp(id){
+  const sorted = [...employees].sort((a,b)=>(a.sortOrder??999)-(b.sortOrder??999));
+  const idx = sorted.findIndex(e=>e.id===id);
+  if(idx <= 0) return;
+  const tmp = sorted[idx].sortOrder;
+  sorted[idx].sortOrder = sorted[idx-1].sortOrder;
+  sorted[idx-1].sortOrder = tmp;
+  saveEmployees(); renderMgrEmp(); renderEmpSelect();
+}
+function moveEmpDown(id){
+  const sorted = [...employees].sort((a,b)=>(a.sortOrder??999)-(b.sortOrder??999));
+  const idx = sorted.findIndex(e=>e.id===id);
+  if(idx >= sorted.length-1) return;
+  const tmp = sorted[idx].sortOrder;
+  sorted[idx].sortOrder = sorted[idx+1].sortOrder;
+  sorted[idx+1].sortOrder = tmp;
+  saveEmployees(); renderMgrEmp(); renderEmpSelect();
 }
 
 // =============================================
@@ -1301,7 +1338,7 @@ function deleteEmp(id){
 // =============================================
 function clearPeriodData(){
   const pl = periodLabel(mgrYear, mgrMonth);
-  if(!confirm(`【注意】${pl} の全社員の勤怠データを削除します。\nExcel出力後に行ってください。\n\nよろしいですか？`)) return;
+  if(!confirm(`【注意】${pl} の全社員の勤怠データを削除します。\nExcel出力後に行ってください。\n\nよろしいですお？`)) return;
   const days = getDays(mgrYear, mgrMonth);
   employees.forEach(emp=>{
     days.forEach(d=>{
@@ -1352,7 +1389,7 @@ function exportExcel(){
           ]);
         });
         wsData.push([]);
-        wsData.push(['','','','','','合計稼働時間', Math.round(tot*100)/100,'','']);
+        wsData.push(['','','','','','%, 合計稼働時間', Math.round(tot*100)/100,'','']);
         wsData.push(['','','','','','合計残業時間','',Math.round(totOT*100)/100,'']);
         const ws = XLSX.utils.aoa_to_sheet(wsData);
         ws['!cols'] = [{wch:8},{wch:4},{wch:10},{wch:10},{wch:10},{wch:10},{wch:12},{wch:12},{wch:24}];
