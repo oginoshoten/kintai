@@ -74,19 +74,20 @@ body { font-family: 'Meiryo', 'Yu Gothic', sans-serif; background: #f0f4f8; min-
 .back-btn:hover { background: #e5e7eb; }
 .emp-title { font-size: 18px; font-weight: bold; color: #1e3a5f; }
 
-.name-selector {
-  width: 100%; max-width: 440px; background: white;
-  border-radius: 14px; padding: 20px; margin-bottom: 24px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+.name-list {
+  width: 100%; max-width: 440px;
+  display: flex; flex-direction: column; gap: 12px;
 }
-.name-selector label { font-size: 13px; color: #6b7280; display: block; margin-bottom: 8px; }
-.name-select {
-  width: 100%; border: 2px solid #d1d5db; border-radius: 10px;
-  padding: 12px 14px; font-size: 18px; font-weight: bold;
-  color: #1f2937; outline: none; appearance: none;
-  background: #f9fafb url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M0 0l6 8 6-8z' fill='%236b7280'/%3E%3C/svg%3E") right 14px center no-repeat;
+.name-btn {
+  width: 100%; padding: 22px 24px;
+  border: 2px solid #d1d5db; border-radius: 14px;
+  background: white; font-size: 22px; font-weight: bold;
+  color: #1f2937; cursor: pointer; text-align: left;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  transition: border-color 0.15s, background 0.15s, transform 0.1s;
 }
-.name-select:focus { border-color: #10b981; }
+.name-btn:hover { border-color: #10b981; background: #f0fdf4; }
+.name-btn:active { transform: scale(0.97); }
 
 .status-card {
   width: 100%; max-width: 440px; background: white;
@@ -360,7 +361,7 @@ input.note-inp { width: 180px; font-size: 12px; }
 <!-- TOP -->
 <div class="top-screen" id="screen-top">
   <div class="top-logo">🕐 勤怠管理システム</div>
-  <div class="top-subtitle">あなたの役割を選んでください</div>
+  <div class="top-subtitle">あどたの役割を選んでください</div>
   <div class="role-cards">
     <div class="role-card emp" onclick="goNameScreen()">
       <div class="icon">👤</div>
@@ -398,13 +399,8 @@ input.note-inp { width: 180px; font-size: 12px; }
     <div class="emp-title">氏名を選択</div>
     <div style="width:60px"></div>
   </div>
-  <div class="name-selector">
-    <label>あなたのお名前を選んでください</label>
-    <select class="name-select" id="emp-select" onchange="onNameSelectChange()"></select>
-  </div>
-  <button class="btn-next" id="btn-name-next" onclick="goClockScreen()" disabled>
-    この名前で進む &nbsp;→
-  </button>
+  <div class="name-list" id="name-list"></div>
+  <select id="emp-select" style="display:none"></select>
 </div>
 
 <!-- EMPLOYEE CLOCK SCREEN -->
@@ -481,7 +477,7 @@ input.note-inp { width: 180px; font-size: 12px; }
 // =============================================
 // FIREBASE CONFIG
 // ※ Firebaseコンソール（https://console.firebase.google.com/）で
-//   プロジェクト設定 > マイアプリ から取得した設定受をここに取付けてください
+//   プロジェクト設定 > マイアプリ から取得した設定をここに貼り付けてください
 // =============================================
 const FIREBASE_CONFIG = {
   apiKey:            "AIzaSyD2aF51pj_aCOek70BsRJ3gsZpu9dbFKWU",
@@ -552,7 +548,7 @@ let editingEmpId  = null;
 // =============================================
 // LOCAL STORAGE + FIREBASE SYNC
 // =============================================
-// localStorageラップ（iOS Safariのfile://なでも落ちないよう）
+// localStorageラップ（iOS Safariのfile://などでも落ちないよう）
 function _lsGet(key){ try{ return localStorage.getItem(key); }catch(e){ return null; } }
 function _lsSet(key, val){ try{ localStorage.setItem(key, val); }catch(e){ /* 保存不可環境では無視 */ } }
 
@@ -634,7 +630,7 @@ function startFirebaseSync() {
     if (doc.exists) {
       try {
         const cloudData = JSON.parse(doc.data().data);
-        // クラウドデータをローカルにユc��ジ（クラウド優先）
+        // クラウドデータをローカルにマージ（クラウド優先）
         entries = Object.assign({}, entries, cloudData);
         _lsSet('kintai_entries', JSON.stringify(entries));
         // 表示中なら再レンダリング
@@ -668,7 +664,7 @@ function startFirebaseSync() {
   }, err => { console.warn('Firestore employees監視失敗:', err); });
 }
 
-// ================================================
+// =============================================
 // UTILITIES
 // =============================================
 const DOW = ["日","月","火","水","木","金","土"];
@@ -722,7 +718,7 @@ function getDays(year, closingMonth){
 function periodLabel(year, closingMonth){
   const pm = closingMonth === 1 ? 12 : closingMonth - 1;
   const py = closingMonth === 1 ? year - 1 : year;
-  return `${py}年${pm}月26日 〜 ${year}年${closingMonth}月25日`;
+  return `${py}�T${pm}月26日 〜 ${year}年${closingMonth}月25日`;
 }
 function ceilTo30(t){
   if(!t) return "";
@@ -781,7 +777,6 @@ function goNameScreen(){
   const s = document.getElementById('screen-name');
   s.style.display = 'flex'; s.style.flexDirection = 'column'; s.style.alignItems = 'center';
   renderEmpSelect();
-  document.getElementById('btn-name-next').disabled = true;
 }
 function onNameSelectChange(){
   const empId = +document.getElementById('emp-select').value;
@@ -1020,7 +1015,7 @@ function mgrLive(ds, field, value){
       const wasAuto = !!brkTd.querySelector('.auto-brk');
       if(autoB && !wasAuto){
         brkTd.innerHTML = `<span class="auto-brk">1.00<br>(自動)</span>`;
-      } else if(!autoB && wasAuto){
+      } else if(!utoB && wasAuto){
         brkTd.innerHTML = `<input type="number" class="break-inp" step="0.5" min="0" max="12" placeholder="0" value="" oninput="mgrLive('${ds}','breakHours',this.value)">`;
       }
     }
@@ -1032,7 +1027,7 @@ function mgrLive(ds, field, value){
   if(q('mgr-total-h'))  q('mgr-total-h').textContent  = fmtH(total);
   if(q('mgr-total-s'))  q('mgr-total-s').textContent  = fmtY(sal);
   if(q('mgr-total-ot')) q('mgr-total-ot').textContent = fmtH(totalOT);
-  if(q('mgr-foot-h'))   q('mgr-foot-h').textContent   = fmtH(total);
+  if(q('mgr-foot-h'))    q('mgr-foot-h').textContent   = fmtH(total);
   if(q('mgr-foot-s'))   q('mgr-foot-s').textContent   = fmtY(sal);
   if(q('mgr-foot-ot'))  q('mgr-foot-ot').textContent  = fmtH(totalOT);
 }
@@ -1041,9 +1036,19 @@ function mgrLive(ds, field, value){
 // EMPLOYEE SCREEN
 // =============================================
 function renderEmpSelect(){
+  // hidden select（打刻画面の関数との互換性のため保持）
   document.getElementById('emp-select').innerHTML =
-    '<option value="">-- 氏名を選択してください --</option>' +
+    '<option value=""></option>' +
     employees.map(e=>`<option value="${e.id}">${e.name}</option>`).join('');
+  // 名前ボタンを上部に表示
+  document.getElementById('name-list').innerHTML =
+    employees.map(e =>
+      `<button class="name-btn" onclick="selectNameAndGo(${e.id})">${e.name}</button>`
+    ).join('');
+}
+function selectNameAndGo(empId){
+  document.getElementById('emp-select').value = empId;
+  goClockScreen();
 }
 function updateEmpStatus(){
   const empId = +document.getElementById('emp-select').value;
@@ -1053,7 +1058,7 @@ function updateEmpStatus(){
     `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日（${DOW[now.getDay()]}）`;
 
   // 未選択の場合はボタン無効・表示リセット
-  if(!empId){
+  if(empId){
     const inEl  = document.getElementById('disp-in');
     const outEl = document.getElementById('disp-out');
     inEl.textContent  = '--:--'; inEl.className  = 'status-time empty';
@@ -1132,7 +1137,7 @@ function showPunchSuccess(name, type, time){
   let count = 4;
   function update(){
     msgEl.innerHTML =
-      `<span style="font-size:16px;font-weight:bold;color:#1f2937">${icon} ${name}さん、${type}しました（${time}）</span><br>` +
+      `<span style="font-size:16px;font-weight:bold;color:#1f2937">${icon} ${name}さん、${type~しました（${time}）</span><br>` +
       `<span style="font-size:13px;color:#9ca3af">${count}秒後にトップ画面に戻ります...</span>`;
   }
   update();
@@ -1200,7 +1205,7 @@ function renderMgrEmp(){
             <label>新しいPIN（確認）</label>
             <input id="pin-new2" type="password" maxlength="8" placeholder="再入力" style="width:130px">
           </div>
-          <button class="btn btn-primary" onclick="changePin()">変更する</button>
+          <button class="btn btn-primary" onclick="changePin()">変更すか</button>
         </div>
         <div id="pin-change-msg" style="margin-top:10px; font-size:13px; min-height:18px;"></div>
       </div>
