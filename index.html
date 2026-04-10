@@ -557,7 +557,7 @@ let editingEmpId  = null;
 // =============================================
 // LOCAL STORAGE + FIREBASE SYNC
 // =============================================
-// localStorageラップ（iOS Safariのfile://なでも落ちないよう）
+// localStorageラップ（iOS Safariのfile://などでも落ちないよう）
 function _lsGet(key){ try{ return localStorage.getItem(key); }catch(e){ return null; } }
 function _lsSet(key, val){ try{ localStorage.setItem(key, val); }catch(e){ /* 保存不可環境では無視 */ } }
 
@@ -589,7 +589,7 @@ async function _cloudSaveEmployees() {
   try {
     await db.collection('kintai').doc('employees').set({
       data: JSON.stringify(employees),
-      nextId: ne nextId,
+      nextId: nextId,
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     });
   } catch(e) { console.warn('Firestore employees保存失敗:', e); }
@@ -641,10 +641,10 @@ function startFirebaseSync() {
     if (doc.exists) {
       try {
         const cloudData = JSON.parse(doc.data().data);
-        // クラウドデータをローカルにユージ（クラウド優先）
+        // クラウドデータをローカルにマージ（クラウド優先）
         entries = Object.assign({}, entries, cloudData);
         _lsSet('kintai_entries', JSON.stringify(entries));
-        // 表示中なら再レンダリング
+        // 表示中ならeg�レンダリング
         if (document.getElementById('screen-mgr').style.display !== 'none' && mgrCurrentTab === 'data') {
           renderMgrData();
         }
@@ -707,7 +707,7 @@ function isFullDay(start, end){
   return (sh*60+sm) <= 12*60 && (eh*60+em) >= 16*60;
 }
 
-// 残業時間: 退勤丸め後が18:00を超えた時間（時間単位）
+// 残業時間: 退勤丸ぁ後が18:00を超えた時間（時間単位）
 function calcOvertimeH(re){
   if(!re) return 0;
   const [h,m] = re.split(':').map(Number);
@@ -869,7 +869,53 @@ function renderMgrData(){
 
   // テーブルヘッダ（社員/パートで異なる）
   // パート: 日付|曜|出勤|丸め|退勤|丸め|休憩|稼働|備考 = 9列
-  // 社員:   �<fz^i���X{�X�G�K��8(ΘX�G�K��8(�Z�.j[8��)��[Pc��X�p�6��7B�VFW$W�G&��56�����F��z��X8�i�.�i3��F���F�7G��S�&6���#�6F3#c#b#�j�jZ҆����F�� ���F��K�hj������F���F��z��X8�i�.�i3��F�����6��7BG'2�&�w2�����B�G2�7F'B�V�B�'&V���W'2�'2�&R�v���B�WF�"���FWғ�簢6��7BF�r�B�vWDF�����5r�F�s�����F�s���c��6��7BF2�F�s����vF�r�7V�s�F�s���c�vF�r�6Bs�rs��6��7Bv��F���v�� ���7�6�73�'v�&�ւ#�G�v��F�f��VB�"����7�� ���7�6�73�'v�&�ע#����7����6��7B�4�Wt���F��B�vWDFFR�������6��7B&�u7G��R��4�Wt���F��v&�&FW"�F��'�6�ƖB66&CVS�r�rs�����K�hj�8+�8:��"j�jZ�8+�8:���WB֖D6V��3���b��56��◰�6��7B�D�F����C���7�6�73�&�B�f�#�G��B�F�f��VB�"����7����7�6�73�&�Bע#����7����֖D6V��2��FB�C�&�v��G�G7�#�G�v��F�����FC��FB�C�&��B�G�G7�#�G��D�F�����FC����V�6R���WB'&�6V�ð��b�WF�"���'&�6V����FB�C�&�'&��G�G7�#��7�6�73�&WF��'&�#���'#⎈z�X�R���7����FC����V�6R��'&�6V����FB�C�&�'&��G�G7�#�Ɩ�WBG�S�&�V�&W""6�73�&'&V�֖�"7FW�#�R"֖��#"���#""�6V���FW#�#"f�VS�"G�'&V���W'7��rw�"���WC�&�w$ƗfR�rG�G7�r�v'&V���W'2r�F��2�f�VR�#���FC���Т֖D6V��2�G�'&�6V����FB�C�&�v��G�G7�#�G�v��F�����FC���Р�&WGW&��G"6�73�"G��5s�wv��Bs�rw�"7G��S�"G�&�u7G��W�#��FB6�73�&�VgB#�G�B�vWD���F������G�B�vWDFFR�����FC��FB6�73�"G�F7�#�G�D�u�F�u����FC��FC�Ɩ�WBG�S�'F��R"f�VS�"G�7F'G�"���WC�&�w$ƗfR�rG�G7�r�w7F'Br�F��2�f�VR�#���FC��FC��7�6�73�'&�V�FVB��&�"�C�&�'2�G�G7�#�G�'7���7����FC��FC�Ɩ�WBG�S�'F��R"f�VS�"G�V�G�"���WC�&�w$ƗfR�rG�G7�r�vV�Br�F��2�f�VR�#���FC��FC��7�6�73�'&�V�FVB��&�"�C�&�&R�G�G7�#�G�&W���7����FC�G�֖D6V��7Т�FC�Ɩ�WBG�S�'FW�B"6�73�&��FR֖�"�6V���FW#�.X)��2"f�VS�"G���FR�&W�6R��"�r�rgV�C�r��"���WC�&�w$ƗfR�rG�G7�r�v��FRr�F��2�f�VR�#���FC���G#���Ғ����rr������8988�8;�X�>X@�6��7B&��W%&�v�B��56����Y����z��X8Ӣ�7G&��r�C�&�w"�F�F�ւ#�G�f�D��F�F���7G&��s�f�'7�f�'7�j�jZӢ�7�6�73�&&��W"��B"�C�&�w"�F�F���B#�G�f�D��F�F��B����7�� ��Y����z��X8Ӣ�7G&��r�C�&�w"�F�F�ւ#�G�f�D��F�F���7G&��s�f�'7�f�'7�{ZnK���7�6�73�&&��W"�6�'�"�C�&�w"�F�F��2#�G�f�E��6�'��salary)}</span>`;
+  // 社員:   日付|曜|出勤|丸め|退勤|丸め|稼働|残業|備考 = 9列
+  const headerExtra = isShain
+    ? `<th>稼働時間</th><th style="color:#dc2626">残業(h)</th>`
+    : `<th>休憩(h)</th><th>稼働時間</th>`;
+
+  const trs = rows.map(({d, ds, start, end, breakHours, rs, re, wh, ot, autoB, note})=>{
+    const dow = d.getDay(), isW = dow===0||dow===6;
+    const dc  = dow===0?'dow-sun':dow===6?'dow-sat':'';
+    const whHtml = wh>0
+      ? `<span class="work-h">${wh.toFixed(2)}</span>`
+      : `<span class="work-z">-</span>`;
+    const isNewMonth = d.getDate()===1;
+    const rowStyle   = isNewMonth ? 'border-top:2px solid #cbd5e1;' : '';
+
+    // 休憩セル or 残業セル
+    let midCells;
+    if(isShain){
+      const otHtml = ot>0 ? `<span class="ot-val">${ot.toFixed(2)}</span>` : `<span class="ot-z">-</span>`;
+      midCells = `<td id="mwh-${ds}">${whHtml}</td><td id="mot-${ds}">${otHtml}</td>`;
+    } else {
+      let brkCell;
+      if(autoB){
+        brkCell = `<td id="mbrk-${ds}"><span class="auto-brk">1.00<br>(自動)</span></td>`;
+      } else {
+        brkCell = `<td id="mbrk-${ds}"><input type="number" class="break-inp" step="0.5" min="0" max="12" placeholder="0" value="${breakHours||''}" oninput="mgrLive('${ds}','breakHours',this.value)"></td>`;
+      }
+      midCells = `${brkCell}<td id="mwh-${ds}">${whHtml}</td>`;
+    }
+
+    return `<tr class="${isW?'wknd':''}" style="${rowStyle}">
+      <td class="left">${d.getMonth()+1}/${d.getDate()}</td>
+      <td class="${dc}">${DOW[dow]}</td>
+      <td><input type="time" value="${start}" oninput="mgrLive('${ds}','start',this.value)"></td>
+      <td><span class="rounded-lbl" id="mrs-${ds}">${rs}</span></td>
+      <td><input type="time" value="${end}"  oninput="mgrLive('${ds}','end',this.value)"></td>
+      <td><span class="rounded-lbl" id="mre-${ds}">${re}</span></td>
+      ${midCells}
+      <td><input type="text" class="note-inp" placeholder="備考" value="${note.replace(/"/g,'&quot;')}" oninput="mgrLive('${ds}','note',this.value)"></td>
+    </tr>`;
+  }).join('');
+
+  // バナー右側
+  const bannerRight = isShain
+    ? `合計稼働: <strong id="mgr-total-h">${fmtH(total)}</strong>
+       &nbsp;&nbsp;残業: <span class="banner-ot" id="mgr-total-ot">${fmtH(totalOT)}</span>`
+    : `合計稼働: <strong id="mgr-total-h">${fmtH(total)}</strong>
+       &nbsp;&nbsp;給与: <span class="banner-salary" id="mgr-total-s">${fmtY(salary)}</span>`;
 
   // フッター（両者とも9列）
   // パート: colspan=7→稼働値→備考空
@@ -1022,7 +1068,7 @@ function updateEmpStatus(){
   const today = todayIso();
   const now   = new Date();
   document.getElementById('today-date').textContent =
-    `${now.getFullYear()}�T${now.getMonth()+1}月${now.getDate()}日（${DOW[now.getDay()]}）`;
+    `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日（${DOW[now.getDay()]}）`;
 
   // 未選択の場合はボタン無効・表示リセット
   if(!empId){
@@ -1104,7 +1150,7 @@ function showPunchSuccess(name, type, time){
   let count = 4;
   function update(){
     msgEl.innerHTML =
-      `<span style="font-size:16px;font-weight:bold;color:#1f2937">${icon} ${name}さん、${type}しました（${time}）</span><br>` +
+      `<span style="font-size:16px;font-weight:bold;color:#1f2937">${icon} ${name}${type}しみした（${time}）</span><br>` +
       `<span style="font-size:13px;color:#9ca3af">${count}秒後にトップ画面に戻ります...</span>`;
   }
   update();
@@ -1129,7 +1175,7 @@ function renderMgrEmp(){
     const isShain = emp.employmentType === '社員';
     if(editingEmpId===emp.id) return `
       <tr draggable="true" data-id="${emp.id}">
-        <td class="drag-handle-cell"><span class="drag-handle">⠿</span></td>
+        <td class="drag-handle-cell"><span class="drag-handle">⠿</span></t/span></td>
         <td class="left"><input id="en-${emp.id}" value="${emp.name}" style="width:140px"></td>
         <td><select id="et-${emp.id}">
           <option value="パート" ${emp.employmentType==='パート'?'selected':''}>パート</option>
@@ -1173,7 +1219,7 @@ function renderMgrEmp(){
             <input id="pin-new2" type="password" maxlength="8" placeholder="再入力" style="width:130px">
           </div>
           <button class="btn btn-primary" onclick="changePin()">変更する</button>
-        </div>
+     (  </div>
         <div id="pin-change-msg" style="margin-top:10px; font-size:13px; min-height:18px;"></div>
       </div>
       <div class="card">
@@ -1446,7 +1492,7 @@ function exportExcel(){
     wsSum['!cols'] = [{wch:16},{wch:8},{wch:10},{wch:16},{wch:12},{wch:14}];
     XLSX.utils.book_append_sheet(wb, wsSum, 'サマリー');
 
-    XLSX.writeFile(wb, `勤怠集計_${mgrYear}年${mgrMonth}月25f��締め.xlsx`);
+    XLSX.writeFile(wb, `勤怠集計_${mgrYear}年${mgrMonth}月25日締め.xlsx`);
   } catch(err){ alert('Excel出力エラー: '+err.message); console.error(err); }
 }
 
