@@ -1,7 +1,16 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
+<meta charset
+
+  // PINクロスデバイス同期
+  db.collection('kintai').doc('settings').onSnapshot({ includeMetadataChanges: true }, doc => {
+    if (doc.metadata.hasPendingWrites) return;
+    if (doc.exists && doc.data().pin) {
+      MANAGER_PIN = doc.data().pin;
+      _lsSet('kintai_pin', MANAGER_PIN);
+    }
+  }, err => { console.warn('Firestore settings監視失敗:', err); });="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>勤怠管理</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -583,6 +592,15 @@ async function _cloudSaveEntries() {
     });
     updateSyncBadge('synced');
   } catch(e) { console.warn('Firestore entries保存失敗:', e); updateSyncBadge('error'); }
+}
+async function _cloudSavePin() {
+  if (!firebaseEnabled || !db) return;
+  try {
+    await db.collection('kintai').doc('settings').set({
+      pin: MANAGER_PIN,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+  } catch(e) { console.warn('Firestore PIN保存失敗:', e); }
 }
 async function _cloudSaveEmployees() {
   if (!firebaseEnabled || !db) return;
@@ -1319,6 +1337,7 @@ function changePin(){
   }
   MANAGER_PIN = newPin;
   localStorage.setItem('kintai_pin', newPin);
+    _cloudSavePin();
   document.getElementById('pin-current').value = '';
   document.getElementById('pin-new').value     = '';
   document.getElementById('pin-new2').value    = '';
