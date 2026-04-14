@@ -1,16 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset
-
-  // PINクロスデバイス同期
-  db.collection('kintai').doc('settings').onSnapshot({ includeMetadataChanges: true }, doc => {
-    if (doc.metadata.hasPendingWrites) return;
-    if (doc.exists && doc.data().pin) {
-      MANAGER_PIN = doc.data().pin;
-      _lsSet('kintai_pin', MANAGER_PIN);
-    }
-  }, err => { console.warn('Firestore settings監視失敗:', err); });="UTF-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>勤怠管理</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -691,6 +682,15 @@ function startFirebaseSync() {
       } catch(e) { console.warn('Firestore employees解析失敗:', e); }
     }
   }, err => { console.warn('Firestore employees監視失敗:', err); });
+
+  // settings（管理者PIN）の監視 — 他端末からのPIN変更をリアルタイム受信
+  db.collection('kintai').doc('settings').onSnapshot({ includeMetadataChanges: true }, doc => {
+    if (doc.metadata.hasPendingWrites) return;
+    if (doc.exists && doc.data().pin) {
+      MANAGER_PIN = doc.data().pin;
+      _lsSet('kintai_pin', MANAGER_PIN);
+    }
+  }, err => { console.warn('Firestore settings監視失敗:', err); });
 }
 
 // =============================================
