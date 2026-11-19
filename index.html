@@ -1354,33 +1354,45 @@ function clearPeriodData(){
 function exportExcel(){
   try{
     const wb=XLSX.utils.book_new(),pl=periodLabel(mgrYear,mgrMonth);
-    const summary=[['勤怠集計サマリー'],['集計期間',pl],[],
-      ['氏名','雇用形態','勤務日数','合計稼働時間(h)','18時以降(h) ※参考','打刻未完了(日)']];
+    // サマリーは最初のタブに表示。全員の勤務日数・実働時間だけを掲載する。
+    const summary=[
+      ['勤怠集計サマリー'],
+      ['集計期間',pl],
+      [],
+      ['氏名','勤務日数（日）','実働時間（h）']
+    ];
+    let allDays=0,allHours=0;
+    const detailSheets=[];
     employees.forEach(emp=>{
       const {rows,total,totalOT,workedDays,pendingDays}=calcPeriod(emp.id);
       const isShain=emp.employmentType==='社員';
+      const roundedHours=Math.round(total*100)/100;
+      summary.push([emp.name,workedDays,roundedHours]);
+      allDays+=workedDays;
+      allHours+=total;
+
+      // 個人別の詳細シートは従来どおり残す。
       const wsData=[['勤怠集計表'],['集計期間',pl,'','氏名',emp.name,'','雇用形態',emp.employmentType],
-        ['勤務日数',workedDays,'稼働時間(h)',Math.round(total*100)/100,'','打刻未完了(日)',pendingDays],[],
+        ['勤務日数',workedDays,'稼働時間(h)',roundedHours,'','打刻未完了(日)',pendingDays],[],
         ['日付','曜日','出勤時間','丸め後出勤','退勤時間','丸め後退勤','休憩(h)','稼働時間(h)','18時以降(h) ※参考','備考']];
       rows.forEach(r=>wsData.push([`${r.d.getMonth()+1}/${r.d.getDate()}`,DOW[r.d.getDay()],
         r.start||'',r.rs||'',r.end||'',r.re||'',r.complete?r.breakHours:'',
         r.complete?Math.round(r.wh*100)/100:'',isShain&&r.complete?Math.round(r.ot*100)/100:'',r.note||'']));
-      wsData.push([],['合計','','','','','','',Math.round(total*100)/100,
+      wsData.push([],['合計','','','','','','',roundedHours,
         isShain?Math.round(totalOT*100)/100:'','']);
       const ws=XLSX.utils.aoa_to_sheet(wsData);
       ws['!cols']=[{wch:8},{wch:4},{wch:11},{wch:12},{wch:11},{wch:12},{wch:10},{wch:13},{wch:21},{wch:30}];
       const sheetName=(emp.name+'_'+emp.id).replace(/[\/?*\[\]:]/g,'_').slice(0,31);
-      XLSX.utils.book_append_sheet(wb,ws,sheetName);
-      summary.push([emp.name,emp.employmentType,workedDays,Math.round(total*100)/100,
-        isShain?Math.round(totalOT*100)/100:'',pendingDays]);
+      detailSheets.push({name:sheetName,sheet:ws});
     });
+    summary.push(['合計',allDays,Math.round(allHours*100)/100]);
     const wsSum=XLSX.utils.aoa_to_sheet(summary);
-    wsSum['!cols']=[{wch:18},{wch:10},{wch:12},{wch:18},{wch:23},{wch:17}];
+    wsSum['!cols']=[{wch:22},{wch:18},{wch:20}];
     XLSX.utils.book_append_sheet(wb,wsSum,'サマリー');
+    detailSheets.forEach(({name,sheet})=>XLSX.utils.book_append_sheet(wb,sheet,name));
     XLSX.writeFile(wb,`勤怠集計_${mgrYear}年${mgrMonth}月25日締め.xlsx`);
   }catch(err){alert('Excel出力エラー: '+err.message);console.error(err);}
 }
-
 // =============================================
 // INIT: localStorageから復元 → Firebase同期開始
 // =============================================
