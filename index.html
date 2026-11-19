@@ -12,6 +12,7 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Meiryo', 'Yu Gothic', sans-serif; background: #f0f4f8; min-height: 100vh; }
 
+
 /* ===== TOP SCREEN ===== */
 .top-screen {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -33,11 +34,13 @@ body { font-family: 'Meiryo', 'Yu Gothic', sans-serif; background: #f0f4f8; min-
 .role-card .label { font-size: 20px; font-weight: bold; color: #1f2937; }
 .role-card .desc { font-size: 13px; color: #6b7280; margin-top: 6px; }
 
+
 /* ===== NAME SELECT SCREEN ===== */
 .name-screen {
   display: none; flex-direction: column; align-items: center;
   min-height: 100vh; padding: 24px 20px; background: #f0f4f8;
 }
+
 
 /* ===== EMPLOYEE SCREEN ===== */
 .emp-screen {
@@ -74,6 +77,7 @@ body { font-family: 'Meiryo', 'Yu Gothic', sans-serif; background: #f0f4f8; min-
 .back-btn:hover { background: #e5e7eb; }
 .emp-title { font-size: 18px; font-weight: bold; color: #1e3a5f; }
 
+
 .name-list {
   width: 100%; max-width: 440px;
   display: flex; flex-direction: column; gap: 12px;
@@ -89,6 +93,7 @@ body { font-family: 'Meiryo', 'Yu Gothic', sans-serif; background: #f0f4f8; min-
 .name-btn:hover { border-color: #10b981; background: #f0fdf4; }
 .name-btn:active { transform: scale(0.97); }
 
+
 .drag-handle {
   cursor: grab; color: #9ca3af; font-size: 20px; padding: 4px 10px;
   user-select: none; display: inline-block; line-height: 1;
@@ -97,6 +102,7 @@ body { font-family: 'Meiryo', 'Yu Gothic', sans-serif; background: #f0f4f8; min-
 .drag-handle-cell { width: 32px; padding: 0 !important; text-align: center; }
 tr.drag-over td { background: #dbeafe !important; }
 tr.dragging { opacity: 0.4; }
+
 
 .status-card {
   width: 100%; max-width: 440px; background: white;
@@ -115,6 +121,7 @@ tr.dragging { opacity: 0.4; }
 .badge-in   { background: #dcfce7; color: #16a34a; }
 .badge-done { background: #dbeafe; color: #2563eb; }
 
+
 .clock-buttons { width: 100%; max-width: 440px; display: flex; flex-direction: column; gap: 16px; }
 .clock-btn {
   width: 100%; padding: 26px; border: none; border-radius: 16px;
@@ -131,6 +138,7 @@ tr.dragging { opacity: 0.4; }
 .btn-out:not(:disabled):hover { background: #dc2626; }
 .btn-icon { font-size: 28px; }
 .clock-msg { width: 100%; max-width: 440px; margin-top: 8px; font-size: 13px; color: #6b7280; text-align: center; padding: 10px 0; }
+
 
 /* ===== MANAGER SCREEN ===== */
 .mgr-screen { display: none; flex-direction: column; min-height: 100vh; }
@@ -171,12 +179,14 @@ tr.dragging { opacity: 0.4; }
 .tag-part  { background: #ede9fe; color: #5b21b6; }
 .mgr-main { flex: 1; padding: 20px 24px; overflow-y: auto; background: #f5f7fa; }
 
+
 /* Controls */
 .ctrl-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
 .ctrl-left { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 select, input { border: 1px solid #d1d5db; border-radius: 6px; padding: 7px 12px; font-size: 13px; background: white; outline: none; }
 select:focus, input:focus { border-color: #1e3a5f; }
 .period-label { font-size: 13px; color: #6b7280; background: #f3f4f6; padding: 7px 14px; border-radius: 6px; font-weight: 500; }
+
 
 /* Buttons */
 .btn { border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; padding: 8px 18px; transition: opacity 0.2s; }
@@ -187,6 +197,7 @@ select:focus, input:focus { border-color: #1e3a5f; }
 .btn-edit { background: #dbeafe; color: #1d4ed8; }
 .btn-del  { background: #fee2e2; color: #dc2626; }
 .btn-save { background: #dcfce7; color: #16a34a; }
+
 
 /* Banner */
 .emp-banner {
@@ -200,6 +211,7 @@ select:focus, input:focus { border-color: #1e3a5f; }
 .banner-totals { text-align: right; }
 .banner-salary { color: #16a34a; font-weight: bold; font-size: 16px; }
 .banner-ot { color: #dc2626; font-weight: bold; font-size: 16px; }
+
 
 /* Table */
 .table-wrap { background: white; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); overflow: hidden; }
@@ -225,6 +237,7 @@ input[type=time] { border: 1px solid #d1d5db; border-radius: 5px; padding: 5px 8
 input.break-inp { width: 68px; }
 input.note-inp { width: 180px; font-size: 12px; }
 .auto-brk { color: #7c3aed; font-size: 11px; font-weight: 600; white-space: nowrap; }
+
 
 /* 社員伝達メモ */
 .emp-memo-card {
@@ -253,12 +266,14 @@ input.note-inp { width: 180px; font-size: 12px; }
 .ot-z   { color: #d1d5db; }
 .footer-note { margin-top: 12px; font-size: 11px; color: #9ca3af; display: flex; gap: 18px; flex-wrap: wrap; }
 
+
 /* Emp management */
 .emp-mgmt-wrap { max-width: 760px; }
 .card { background: white; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); padding: 18px; margin-bottom: 18px; }
 .card h3 { font-size: 12px; font-weight: bold; color: #9ca3af; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.04em; }
 .add-form { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
 .add-form-field label { font-size: 12px; color: #6b7280; display: block; margin-bottom: 4px; }
+
 
 /* PIN modal */
 .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 100; }
@@ -272,7 +287,9 @@ input.note-inp { width: 180px; font-size: 12px; }
 .modal-btns { display: flex; gap: 10px; margin-top: 18px; }
 .modal-btns button { flex: 1; }
 
+
 /* ===== RESPONSIVE ===== */
+
 
 /* タブレット (641px〜1024px) */
 @media (max-width: 1024px) {
@@ -282,6 +299,7 @@ input.note-inp { width: 180px; font-size: 12px; }
   input[type=time] { width: 95px; }
   input.note-inp { width: 130px; }
 }
+
 
 /* スマホ (〜640px) */
 @media (max-width: 640px) {
@@ -293,6 +311,7 @@ input.note-inp { width: 180px; font-size: 12px; }
   .mgr-header h1 { font-size: 15px; }
   .mgr-nav { width: 100%; display: flex; gap: 6px; flex-wrap: wrap; }
   .mgr-nav button { flex: 1; padding: 6px 8px; font-size: 12px; min-width: 70px; }
+
 
   /* サイドバー → 上部の横スクロールリストに変換 */
   .mgr-body { flex-direction: column; }
@@ -316,8 +335,10 @@ input.note-inp { width: 180px; font-size: 12px; }
   .emp-sb-btn.active { background: #eff6ff; border-color: #3b82f6; }
   .emp-sb-btn .sbr, .emp-sb-btn .sbt { display: none; }
 
+
   /* メインエリア */
   .mgr-main { padding: 12px; }
+
 
   /* コントロールバー */
   .ctrl-bar { flex-direction: column; align-items: flex-start; gap: 8px; }
@@ -325,11 +346,13 @@ input.note-inp { width: 180px; font-size: 12px; }
   .ctrl-bar > button { width: 100%; }
   .period-label { font-size: 12px; }
 
+
   /* バナー */
   .emp-banner { flex-direction: column; align-items: flex-start; gap: 8px; }
   .banner-totals { text-align: left; }
   .banner-name { font-size: 17px; }
   .banner-salary, .banner-ot { font-size: 14px; }
+
 
   /* テーブル：横スクロール */
   .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 8px; }
@@ -339,8 +362,10 @@ input.note-inp { width: 180px; font-size: 12px; }
   input.break-inp { width: 56px; font-size: 12px; }
   input.note-inp { width: 100px; font-size: 11px; }
 
+
   /* フッターノート */
   .footer-note { flex-direction: column; gap: 4px; font-size: 10px; }
+
 
   /* 社員管理カード */
   .emp-mgmt-wrap { max-width: 100%; }
@@ -349,13 +374,16 @@ input.note-inp { width: 180px; font-size: 12px; }
   .add-form-field input, .add-form-field select { width: 100%; }
   .add-form > button { width: 100%; }
 
+
   /* モーダル */
   .modal { padding: 24px 20px; margin: 0 16px; min-width: 0; width: 100%; }
   .modal h2 { font-size: 16px; }
   .pin-input { font-size: 22px; letter-spacing: 6px; }
 
+
   /* 打刻ボタン */
   .clock-btn { padding: 22px; font-size: 21px; }
+
 
   /* 社員管理テーブル */
   .card { overflow-x: auto; }
@@ -366,6 +394,7 @@ input.note-inp { width: 180px; font-size: 12px; }
 </style>
 </head>
 <body>
+
 
 <!-- TOP -->
 <div class="top-screen" id="screen-top">
@@ -385,6 +414,7 @@ input.note-inp { width: 180px; font-size: 12px; }
   </div>
 </div>
 
+
 <!-- PIN MODAL -->
 <div class="modal-bg" id="pin-modal" style="display:none">
   <div class="modal">
@@ -400,6 +430,7 @@ input.note-inp { width: 180px; font-size: 12px; }
   </div>
 </div>
 
+
 <!-- EMPLOYEE SCREEN -->
 <!-- NAME SELECTION SCREEN -->
 <div class="name-screen" id="screen-name">
@@ -411,6 +442,7 @@ input.note-inp { width: 180px; font-size: 12px; }
   <div class="name-list" id="name-list"></div>
   <select id="emp-select" style="display:none"></select>
 </div>
+
 
 <!-- EMPLOYEE CLOCK SCREEN -->
 <div class="emp-screen" id="screen-emp">
@@ -439,10 +471,11 @@ input.note-inp { width: 180px; font-size: 12px; }
     </div>
   </div>
   <div class="clock-buttons">
-    <button class="clock-btn btn-in"  id="btn-clock-in"  onclick="clockIn()"> <span class="btn-icon">🟢</span> 出　勤 </button>
-    <button class="clock-btn btn-out" id="btn-clock-out" onclick="clockOut()"> <span class="btn-icon">🔴</span> 退　勤 </button>
+    <button class="clock-btn btn-in"  id="btn-clock-in"  onclick="clockIn()"> <span class="btn-icon">🟢</span> 出 勤 </button>
+    <button class="clock-btn btn-out" id="btn-clock-out" onclick="clockOut()"> <span class="btn-icon">🔴</span> 退 勤 </button>
   </div>
   <p class="clock-msg" id="clock-msg"></p>
+
 
   <!-- 伝達メモ欄 -->
   <div class="emp-memo-card">
@@ -456,6 +489,7 @@ input.note-inp { width: 180px; font-size: 12px; }
     </div>
   </div>
 </div>
+
 
 <!-- MANAGER SCREEN -->
 <div class="mgr-screen" id="screen-mgr">
@@ -482,6 +516,7 @@ input.note-inp { width: 180px; font-size: 12px; }
   </div>
 </div>
 
+
 <script>
 // =============================================
 // FIREBASE CONFIG
@@ -496,6 +531,7 @@ const FIREBASE_CONFIG = {
   messagingSenderId: "123961487756",
   appId:             "1:123961487756:web:c2d74fbfe172295124e6a9"
 };
+
 
 let db = null;
 let firebaseEnabled = false;
@@ -514,39 +550,43 @@ let firebaseEnabled = false;
   }
 })();
 
+
 // =============================================
 // CONFIG
 // =============================================
 let MANAGER_PIN    = localStorage.getItem('kintai_pin') || "1234";
+
 
 // =============================================
 // DATA
 // =============================================
 // デフォルト社員リスト（スプレッドシート読み込み失敗時のフォールバック）
 let employees = [
-  { id:1,  name:"島野典子",     hourlyRate:1200, employmentType:"パート", sortOrder:1  },
-  { id:2,  name:"小野田佐知子", hourlyRate:1200, employmentType:"パート", sortOrder:2  },
-  { id:3,  name:"大久保江利",   hourlyRate:1150, employmentType:"パート", sortOrder:3  },
-  { id:4,  name:"新井豊子",     hourlyRate:1180, employmentType:"パート", sortOrder:4  },
-  { id:5,  name:"西沢敏子",     hourlyRate:1150, employmentType:"パート", sortOrder:5  },
-  { id:6,  name:"福島千秋",     hourlyRate:1150, employmentType:"パート", sortOrder:6  },
-  { id:7,  name:"竹園智彦",     hourlyRate:1141, employmentType:"パート", sortOrder:7  },
-  { id:8,  name:"清水若江",     hourlyRate:1150, employmentType:"パート", sortOrder:8  },
-  { id:9,  name:"清水恵美子",   hourlyRate:1141, employmentType:"パート", sortOrder:9  },
-  { id:10, name:"橋本美紗登",   hourlyRate:1150, employmentType:"パート", sortOrder:10 },
-  { id:11, name:"塩原美智子",   hourlyRate:1141, employmentType:"パート", sortOrder:11 },
-  { id:12, name:"田中良子",     hourlyRate:1141, employmentType:"パート", sortOrder:12 },
-  { id:13, name:"松村千恵",     hourlyRate:1141, employmentType:"パート", sortOrder:13 },
-  { id:14, name:"西島雅美",     hourlyRate:1141, employmentType:"パート", sortOrder:14 },
-  { id:15, name:"吉川みどり",   hourlyRate:1150, employmentType:"パート", sortOrder:15 },
-  { id:16, name:"清水裕美",     hourlyRate:1141, employmentType:"パート", sortOrder:16 },
-  { id:17, name:"松崎冴子",     hourlyRate:0,    employmentType:"社員",   sortOrder:17 },
-  { id:18, name:"笠原未緒",     hourlyRate:0,    employmentType:"社員",   sortOrder:18 },
+  { id:1,  name:"島野典子", employmentType:"パート", sortOrder:1  },
+  { id:2,  name:"小野田佐知子", employmentType:"パート", sortOrder:2  },
+  { id:3,  name:"大久保江利", employmentType:"パート", sortOrder:3  },
+  { id:4,  name:"新井豊子", employmentType:"パート", sortOrder:4  },
+  { id:5,  name:"西沢敏子", employmentType:"パート", sortOrder:5  },
+  { id:6,  name:"福島千秋", employmentType:"パート", sortOrder:6  },
+  { id:7,  name:"竹園智彦", employmentType:"パート", sortOrder:7  },
+  { id:8,  name:"清水若江", employmentType:"パート", sortOrder:8  },
+  { id:9,  name:"清水恵美子", employmentType:"パート", sortOrder:9  },
+  { id:10, name:"橋本美紗登", employmentType:"パート", sortOrder:10 },
+  { id:11, name:"塩原美智子", employmentType:"パート", sortOrder:11 },
+  { id:12, name:"田中良子", employmentType:"パート", sortOrder:12 },
+  { id:13, name:"松村千恵", employmentType:"パート", sortOrder:13 },
+  { id:14, name:"西島雅美", employmentType:"パート", sortOrder:14 },
+  { id:15, name:"吉川みどり", employmentType:"パート", sortOrder:15 },
+  { id:16, name:"清水裕美", employmentType:"パート", sortOrder:16 },
+  { id:17, name:"松崎冴子",    employmentType:"社員",   sortOrder:17 },
+  { id:18, name:"笠原未緒",    employmentType:"社員",   sortOrder:18 },
 ];
 let nextId = 19;
 
+
 // entries: key=`${empId}_${YYYY-MM-DD}` → {start, end, breakHours, note}
 let entries = {};
+
 
 // Manager state
 let mgrEmpId      = 1;
@@ -561,6 +601,7 @@ let editingEmpId  = null;
 function _lsGet(key){ try{ return localStorage.getItem(key); }catch(e){ return null; } }
 function _lsSet(key, val){ try{ localStorage.setItem(key, val); }catch(e){ /* 保存不可環境では無視 */ } }
 
+
 // --- 同期バッジ ---
 function updateSyncBadge(status) {
   const badge = document.getElementById('sync-badge-mgr');
@@ -571,6 +612,7 @@ function updateSyncBadge(status) {
   else if (status === 'offline') { badge.textContent = '💾 ローカル'; badge.style.color = '#d1d5db'; }
   else { badge.textContent = ''; }
 }
+
 
 // --- Firestoreへ保存 ---
 async function _cloudSaveEntries() {
@@ -604,6 +646,7 @@ async function _cloudSaveEmployees() {
   } catch(e) { console.warn('Firestore employees保存失敗:', e); }
 }
 
+
 // --- 保存（ローカル＋クラウド） ---
 function saveEntries(){
   _lsSet('kintai_entries', JSON.stringify(entries));
@@ -614,6 +657,7 @@ function saveEmployees(){
   _lsSet('kintai_next_id',   String(nextId));
   _cloudSaveEmployees();
 }
+
 
 // --- ローカルから読み込み ---
 function loadEntries(){
@@ -638,11 +682,14 @@ function loadEmployees(){
   } catch(e){ console.warn('employees読込失敗:', e); }
 }
 
+
 // --- Firestoreリアルタイム同期開始 ---
 function startFirebaseSync() {
   if (!firebaseEnabled || !db) { updateSyncBadge('offline'); return; }
 
+
   updateSyncBadge('syncing');
+
 
   // entries の監視（サーバー変更のみ処理）
   db.collection('kintai').doc('entries').onSnapshot({ includeMetadataChanges: true }, doc => {
@@ -661,6 +708,7 @@ function startFirebaseSync() {
       } catch(e) { console.warn('Firestore entries解析失敗:', e); }
     }
   }, err => { console.warn('Firestore entries監視失敗:', err); updateSyncBadge('error'); });
+
 
   // employees の監視
   db.collection('kintai').doc('employees').onSnapshot({ includeMetadataChanges: true }, doc => {
@@ -683,6 +731,7 @@ function startFirebaseSync() {
     }
   }, err => { console.warn('Firestore employees監視失敗:', err); });
 
+
   // settings（管理者PIN）の監視 — 他端末からのPIN変更をリアルタイム受信
   db.collection('kintai').doc('settings').onSnapshot({ includeMetadataChanges: true }, doc => {
     if (doc.metadata.hasPendingWrites) return;
@@ -692,6 +741,7 @@ function startFirebaseSync() {
     }
   }, err => { console.warn('Firestore settings監視失敗:', err); });
 }
+
 
 // =============================================
 // UTILITIES
@@ -717,6 +767,7 @@ function setEntry(empId, dateStr, field, value){
   saveEntries();
 }
 
+
 // 全日勤務判定: 出勤≤12:00 かつ 退勤≥16:00
 function isFullDay(start, end){
   if(!start || !end) return false;
@@ -725,12 +776,14 @@ function isFullDay(start, end){
   return (sh*60+sm) <= 12*60 && (eh*60+em) >= 16*60;
 }
 
+
 // 残業時間: 退勤丸ぁ後が18:00を超えた時間（時間単位）
 function calcOvertimeH(re){
   if(!re) return 0;
   const [h,m] = re.split(':').map(Number);
   return Math.max(0, (h*60+m - 18*60) / 60);
 }
+
 
 // 期間: 前月26日〜当月25日
 function getDays(year, closingMonth){
@@ -770,29 +823,51 @@ function diffH(a,b){
 function fmtH(h){ return h>0 ? h.toFixed(2)+' h' : '-'; }
 function fmtY(n){ return '¥'+Math.round(n).toLocaleString('ja-JP'); }
 
+
 // 集計
+// 個人別の昼休憩設定。既存パートは従来の全日勤務1時間を初期値とする。
+// 個人マスタを保存すれば0分・30分・45分・60分・90分を選べる。
+function getDefaultBreakHours(emp){
+  const prior = emp && emp.employmentType === '社員' ? 0 : 1;
+  const val = emp && emp.defaultBreakHours != null ? Number(emp.defaultBreakHours) : prior;
+  return [0, 0.5, 0.75, 1, 1.5].includes(val) ? val : prior;
+}
+function getEffectiveBreakHours(emp, record){
+  // 日別の手入力（0を含む）があれば必ず優先。未入力時だけマスタに従う。
+  if (record.breakHours !== '' && record.breakHours != null) {
+    const value = Number(record.breakHours);
+    return Number.isFinite(value) ? Math.max(0, Math.min(12, value)) : 0;
+  }
+  // 従来の全日勤務の判定は保持。休憩時間そのものは社員ごとに選択。
+  return isFullDay(record.start, record.end) ? getDefaultBreakHours(emp) : 0;
+}
+function breakOptions(value){
+  return [[0,'なし（0分）'],[0.5,'30分'],[0.75,'45分'],[1,'60分'],[1.5,'90分']]
+    .map(([v,label])=>`<option value="${v}" ${Number(value)===v?'selected':''}>${label}</option>`).join('');
+}
+
 function calcPeriod(empId){
   const emp = employees.find(e=>e.id===empId);
   const isShain = emp && emp.employmentType === '社員';
   const days = getDays(mgrYear, mgrMonth);
-  let total = 0, totalOT = 0;
-  const rows = days.map(d => {
-    const ds  = isoDate(d);
-    const e   = getEntry(empId, ds);
-    const rs  = ceilTo30(e.start), re = floorTo30(e.end);
-    const autoB = !isShain && isFullDay(e.start, e.end);
-    const brk   = autoB ? 1 : (parseFloat(e.breakHours)||0);
-    const wh    = e.start&&e.end ? Math.max(0, diffH(rs,re)-brk) : 0;
-    const ot    = isShain ? calcOvertimeH(re) : 0;
-    total += wh; totalOT += ot;
-    return {d, ds, start:e.start, end:e.end, breakHours:brk, rs, re, wh, ot, autoB, note:e.note||''};
+  let total=0, totalOT=0, workedDays=0, pendingDays=0;
+  const rows = days.map(d=>{
+    const ds = isoDate(d), e=getEntry(empId,ds);
+    const start=e.start||'', end=e.end||'';
+    const complete = !!(start && end);
+    if(complete) workedDays++;
+    else if(start || end) pendingDays++;
+    const rs=ceilTo30(start), re=floorTo30(end);
+    const brk=complete ? getEffectiveBreakHours(emp,e) : 0;
+    const wh=complete ? Math.max(0,diffH(rs,re)-brk) : 0;
+    const ot=isShain && complete ? calcOvertimeH(re) : 0;
+    total+=wh; totalOT+=ot;
+    const manuallySet=e.breakHours!=='' && e.breakHours!=null;
+    return {d,ds,start,end,rs,re,wh,ot,breakHours:brk,
+      manualBreak:manuallySet?String(e.breakHours):'',note:e.note||'',complete};
   });
-  return {rows, total, totalOT};
+  return {rows,total,totalOT,workedDays,pendingDays};
 }
-
-// =============================================
-// NAVIGATION
-// =============================================
 function goTop(){
   document.getElementById('screen-name').style.display = 'none';
   document.getElementById('screen-emp').style.display  = 'none';
@@ -824,6 +899,7 @@ function goClockScreen(){
 // goEmployee は後方互換のため残す
 function goEmployee(){ goNameScreen(); }
 
+
 // =============================================
 // PIN
 // =============================================
@@ -841,6 +917,7 @@ function checkPin(){
     document.getElementById('pin-input').value = '';
   }
 }
+
 
 // =============================================
 // MANAGER
@@ -865,206 +942,99 @@ function renderMgrSidebar(){
   const sorted = [...employees].sort((a,b)=>(a.sortOrder??999)-(b.sortOrder??999));
   document.getElementById('mgr-sidebar-list').innerHTML = sorted.map(e=>{
     const isShain = e.employmentType === '社員';
-    const subLine = isShain
-      ? `<span class="sbt tag-shain">社員</span>`
-      : `<span class="sbr">¥${e.hourlyRate.toLocaleString()}/h</span>`;
+    const subLine=isShain
+      ? '<span class="sbt tag-shain">社員</span>'
+      : '<span class="sbt tag-part">パート</span>';
     return `<button class="emp-sb-btn ${e.id===mgrEmpId?'active':''}" onclick="selectMgrEmp(${e.id})">
-      <div class="sbn">${e.name}</div>
-      ${subLine}
-    </button>`;
+      <div class="sbn">${e.name}</div>${subLine}</button>`;
   }).join('');
 }
 function selectMgrEmp(id){ mgrEmpId=id; renderMgrSidebar(); if(mgrCurrentTab==='data') renderMgrData(); }
 
+
 function renderMgrData(){
   const emp = employees.find(e=>e.id===mgrEmpId);
-  if(!emp){ document.getElementById('mgr-view-data').innerHTML='<p>社員を選択してください</p>'; return; }
-
-  const isShain = emp.employmentType === '社員';
-  const {rows, total, totalOT} = calcPeriod(mgrEmpId);
-  const salary = isShain ? null : total * emp.hourlyRate;
-  const pl     = periodLabel(mgrYear, mgrMonth);
-
-  // テーブルヘッダ（社員/パートで異なる）
-  // パート: 日付|曜|出勤|丸め|退勤|丸め|休憩|稼働|備考 = 9列
-  // 社員:   日付|曜|出勤|丸め|退勤|丸め|稼働|残業|備考 = 9列
-  const headerExtra = isShain
-    ? `<th>稼働時間</th><th style="color:#dc2626">残業(h)</th>`
-    : `<th>休憩(h)</th><th>稼働時間</th>`;
-
-  const trs = rows.map(({d, ds, start, end, breakHours, rs, re, wh, ot, autoB, note})=>{
-    const dow = d.getDay(), isW = dow===0||dow===6;
-    const dc  = dow===0?'dow-sun':dow===6?'dow-sat':'';
-    const whHtml = wh>0
-      ? `<span class="work-h">${wh.toFixed(2)}</span>`
-      : `<span class="work-z">-</span>`;
-    const isNewMonth = d.getDate()===1;
-    const rowStyle   = isNewMonth ? 'border-top:2px solid #cbd5e1;' : '';
-
-    // 休憩セル or 残業セル
-    let midCells;
-    if(isShain){
-      const otHtml = ot>0 ? `<span class="ot-val">${ot.toFixed(2)}</span>` : `<span class="ot-z">-</span>`;
-      midCells = `<td id="mwh-${ds}">${whHtml}</td><td id="mot-${ds}">${otHtml}</td>`;
-    } else {
-      let brkCell;
-      if(autoB){
-        brkCell = `<td id="mbrk-${ds}"><span class="auto-brk">1.00<br>(自動)</span></td>`;
-      } else {
-        brkCell = `<td id="mbrk-${ds}"><input type="number" class="break-inp" step="0.5" min="0" max="12" placeholder="0" value="${breakHours||''}" oninput="mgrLive('${ds}','breakHours',this.value)"></td>`;
-      }
-      midCells = `${brkCell}<td id="mwh-${ds}">${whHtml}</td>`;
-    }
-
+  if(!emp){document.getElementById('mgr-view-data').innerHTML='<p>社員を選択してください</p>';return;}
+  const isShain=emp.employmentType==='社員';
+  const {rows,total,totalOT,workedDays,pendingDays}=calcPeriod(mgrEmpId);
+  const pl=periodLabel(mgrYear,mgrMonth);
+  const headerExtra=isShain
+    ? '<th>稼働時間(h)</th><th style="color:#dc2626">18時以降(h)</th>'
+    : '<th>休憩(h)</th><th>稼働時間(h)</th>';
+  const trs=rows.map(({d,ds,start,end,breakHours,manualBreak,rs,re,wh,ot,note})=>{
+    const dow=d.getDay(), isW=dow===0||dow===6;
+    const dc=dow===0?'dow-sun':dow===6?'dow-sat':'';
+    const whHtml=wh>0?`<span class="work-h">${wh.toFixed(2)}</span>`:'<span class="work-z">-</span>';
+    const rowStyle=d.getDate()===1?'border-top:2px solid #cbd5e1;':'';
+    const midCells=isShain
+      ? `<td id="mwh-${ds}">${whHtml}</td><td id="mot-${ds}">${ot>0?ot.toFixed(2):'-'}</td>`
+      : `<td id="mbrk-${ds}"><input type="number" id="brk-${ds}" class="break-inp" step="0.25" min="0" max="12"
+        placeholder="${breakHours.toFixed(2)}" value="${manualBreak}"
+        title="未入力なら個人マスタの昼休憩設定。0入力でその日だけ休憩なし"
+        oninput="mgrLive('${ds}','breakHours',this.value)"></td><td id="mwh-${ds}">${whHtml}</td>`;
     return `<tr class="${isW?'wknd':''}" style="${rowStyle}">
-      <td class="left">${d.getMonth()+1}/${d.getDate()}</td>
-      <td class="${dc}">${DOW[dow]}</td>
+      <td class="left">${d.getMonth()+1}/${d.getDate()}</td><td class="${dc}">${DOW[dow]}</td>
       <td><input type="time" value="${start}" oninput="mgrLive('${ds}','start',this.value)"></td>
       <td><span class="rounded-lbl" id="mrs-${ds}">${rs}</span></td>
-      <td><input type="time" value="${end}"  oninput="mgrLive('${ds}','end',this.value)"></td>
+      <td><input type="time" value="${end}" oninput="mgrLive('${ds}','end',this.value)"></td>
       <td><span class="rounded-lbl" id="mre-${ds}">${re}</span></td>
       ${midCells}
-      <td><input type="text" class="note-inp" placeholder="備考" value="${note.replace(/"/g,'&quot;')}" oninput="mgrLive('${ds}','note',this.value)"></td>
+      <td><input type="text" class="note-inp" placeholder="備考" value="${note.replace(/"/g,'&quot;')}"
+         oninput="mgrLive('${ds}','note',this.value)"></td>
     </tr>`;
   }).join('');
-
-  // バナー右側
-  const bannerRight = isShain
-    ? `合計稼働: <strong id="mgr-total-h">${fmtH(total)}</strong>
-       &nbsp;&nbsp;残業: <span class="banner-ot" id="mgr-total-ot">${fmtH(totalOT)}</span>`
-    : `合計稼働: <strong id="mgr-total-h">${fmtH(total)}</strong>
-       &nbsp;&nbsp;給与: <span class="banner-salary" id="mgr-total-s">${fmtY(salary)}</span>`;
-
-  // フッター（両者とも9列）
-  // パート: colspan=7→稼働値→備考空
-  // 社員:   colspan=6→稼働値→残業値→備考空
-  const footerHtml = isShain
-    ? `<tr>
-         <td colspan="6" style="text-align:right">合計稼働時間:</td>
-         <td id="mgr-foot-h">${fmtH(total)}</td>
-         <td></td><td></td>
-       </tr>
-       <tr class="ot-row">
-         <td colspan="6" style="text-align:right">合計残業時間:</td>
-         <td></td>
-         <td><span class="ot-foot-val" id="mgr-foot-ot">${fmtH(totalOT)}</span></td>
-         <td></td>
-       </tr>`
-    : `<tr>
-         <td colspan="7" style="text-align:right">合計稼働時間:</td>
-         <td id="mgr-foot-h">${fmtH(total)}</td>
-         <td></td>
-       </tr>
-       <tr class="salary-row">
-         <td colspan="7" style="text-align:right">給与（税前）:</td>
-         <td><span class="salary-val" id="mgr-foot-s">${fmtY(salary)}</span></td>
-         <td></td>
-       </tr>`;
-
-  const statusHtml = '';
-
-  const bannerClass  = isShain ? 'emp-banner shain' : 'emp-banner';
-  const bannerTagHtml = isShain
-    ? `<span class="banner-tag tag-shain">社員</span>`
-    : `<span class="banner-tag tag-part">パート</span><span style="font-size:13px;color:#6b7280;margin-left:6px">時給 ¥${emp.hourlyRate.toLocaleString()}</span>`;
-
-  const footerNoteExtra = isShain
-    ? '<span>* 残業時間 = 退勤丸め後が18:00を超えた時間</span>'
-    : '<span>* 全日勤務（出勤≤12:00 かつ 退勤≥16:00）は1時間休憩を自動適用</span>';
-
-  document.getElementById('mgr-view-data').innerHTML = `
-    <div class="ctrl-bar">
-      <div class="ctrl-left">
-        <select onchange="mgrYear=+this.value;renderMgrData()">
-          ${[2025,2026,2027].map(y=>`<option value="${y}" ${y===mgrYear?'selected':''}>${y}年</option>`).join('')}
-        </select>
-        <select onchange="mgrMonth=+this.value;renderMgrData()">
-          ${Array.from({length:12},(_,i)=>i+1).map(m=>`<option value="${m}" ${m===mgrMonth?'selected':''}>${m}月25日締め</option>`).join('')}
-        </select>
-        <span class="period-label">📅 ${pl}</span>
-        ${statusHtml}
-      </div>
-      <button class="btn btn-success" onclick="exportExcel()">📥 Excel出力（全社員）</button>
-      <button class="btn" style="background:#dc2626;color:white;margin-left:8px" onclick="clearPeriodData()">🗑️ 当期データ削除</button>
-    </div>
-    <div class="${bannerClass}">
-      <div>
-        <span class="banner-name">${emp.name}</span>${bannerTagHtml}
-      </div>
+  const bannerRight=`勤務日数: <strong id="mgr-total-days">${workedDays}日</strong>
+    &nbsp;&nbsp; 合計稼働: <strong id="mgr-total-h">${fmtH(total)}</strong>
+    ${isShain?`&nbsp;&nbsp;18時以降: <span class="banner-ot" id="mgr-total-ot">${fmtH(totalOT)}</span>`:''}
+    <span id="mgr-pending" style="color:#b45309">${pendingDays?' &nbsp;未完了:'+pendingDays+'日':''}</span>`;
+  const footerHtml=isShain
+    ? `<tr><td colspan="6" style="text-align:right">合計稼働時間:</td><td id="mgr-foot-h">${fmtH(total)}</td><td></td><td></td></tr>
+       <tr><td colspan="6" style="text-align:right">勤務日数:</td><td id="mgr-foot-days">${workedDays}日</td><td></td><td></td></tr>`
+    : `<tr><td colspan="7" style="text-align:right">合計稼働時間:</td><td id="mgr-foot-h">${fmtH(total)}</td><td></td></tr>
+       <tr><td colspan="7" style="text-align:right">勤務日数:</td><td id="mgr-foot-days">${workedDays}日</td><td></td></tr>`;
+  const bannerTagHtml=isShain?'<span class="banner-tag tag-shain">社員</span>':'<span class="banner-tag tag-part">パート</span>';
+  document.getElementById('mgr-view-data').innerHTML=`
+    <div class="ctrl-bar"><div class="ctrl-left">
+      <select onchange="mgrYear=+this.value;renderMgrData()">
+        ${[2025,2026,2027,2028].map(y=>`<option value="${y}" ${y===mgrYear?'selected':''}>${y}年</option>`).join('')}</select>
+      <select onchange="mgrMonth=+this.value;renderMgrData()">
+        ${Array.from({length:12},(_,i)=>i+1).map(m=>`<option value="${m}" ${m===mgrMonth?'selected':''}>${m}月25日締め</option>`).join('')}</select>
+      <span class="period-label">📅 ${pl}</span>
+    </div><button class="btn btn-success" onclick="exportExcel()">📥 Excel出力（全社員）</button>
+    <button class="btn" style="background:#dc2626;color:white;margin-left:8px" onclick="clearPeriodData()">🗑️ 当期データ削除</button></div>
+    <div class="${isShain?'emp-banner shain':'emp-banner'}">
+      <div><span class="banner-name">${emp.name}</span>${bannerTagHtml}</div>
       <div class="banner-totals">${bannerRight}</div>
     </div>
-    <div class="table-wrap">
-      <table>
-        <thead><tr>
-          <th class="left">日付</th><th>曜</th>
-          <th>出勤時間</th><th style="color:#1d4ed8">丸め後</th>
-          <th>退勤時間</th><th style="color:#1d4ed8">丸め後</th>
-          ${headerExtra}
-          <th class="left">備考</th>
-        </tr></thead>
-        <tbody>${trs}</tbody>
-        <tfoot>${footerHtml}</tfoot>
-      </table>
-    </div>
+    <div class="table-wrap"><table><thead><tr>
+      <th class="left">日付</th><th>曜</th><th>出勤時間</th><th style="color:#1d4ed8">丸め後</th>
+      <th>退勤時間</th><th style="color:#1d4ed8">丸め後</th>${headerExtra}<th class="left">備考</th>
+    </tr></thead><tbody>${trs}</tbody><tfoot>${footerHtml}</tfoot></table></div>
     <div class="footer-note">
-      <span>* 出勤は30分単位で切り上げ（例: 8:31 → 9:00）</span>
-      <span>* 退勤は30分単位で切り捨て（例: 17:29 → 17:00）</span>
-      ${footerNoteExtra}
+     <span>* 出勤は30分単位で切り上げ／退勤は30分単位で切り捨て（従来のルール）</span>
+     <span>* 昼休憩は個人マスタから設定（全日勤務時）。各日で上書きできます</span>
+     <span>* 勤務日数は出勤・退勤がそろった日を1日と数え、打刻漏れは未完了として別表示</span>
+     ${isShain?'<span>* 18時以降は法定時間外労働の集計とは異なります</span>':''}
     </div>`;
 }
-
-function mgrLive(ds, field, value){
-  setEntry(mgrEmpId, ds, field, value);
-
-  // 備考は計算不要
-  if(field === 'note') return;
-
-  const emp     = employees.find(e=>e.id===mgrEmpId);
-  const isShain = emp && emp.employmentType === '社員';
-  const e       = entries[entryKey(mgrEmpId, ds)] || {};
-  const rs      = ceilTo30(e.start||''), re = floorTo30(e.end||'');
-  const autoB   = !isShain && isFullDay(e.start||'', e.end||'');
-  const brk     = autoB ? 1 : (parseFloat(e.breakHours)||0);
-  const wh      = e.start&&e.end ? Math.max(0, diffH(rs,re)-brk) : 0;
-  const ot      = isShain ? calcOvertimeH(re) : 0;
-
-  const q = id => document.getElementById(id);
-  if(q(`mrs-${ds}`)) q(`mrs-${ds}`).textContent = rs;
-  if(q(`mre-${ds}`)) q(`mre-${ds}`).textContent = re;
-  if(q(`mwh-${ds}`)) q(`mwh-${ds}`).innerHTML = wh>0
-    ? `<span class="work-h">${wh.toFixed(2)}</span>`
-    : `<span class="work-z">-</span>`;
-  if(isShain && q(`mot-${ds}`)) q(`mot-${ds}`).innerHTML = ot>0
-    ? `<span class="ot-val">${ot.toFixed(2)}</span>`
-    : '<span class="ot-z">-</span>';
-
-  // パートの全日判定が変わった場合、休憩セルを更新
-  if(!isShain && (field==='start'||field==='end')){
-    const brkTd = q(`mbrk-${ds}`);
-    if(brkTd){
-      const wasAuto = !!brkTd.querySelector('.auto-brk');
-      if(autoB && !wasAuto){
-        brkTd.innerHTML = `<span class="auto-brk">1.00<br>(自動)</span>`;
-      } else if(!autoB && wasAuto){
-        brkTd.innerHTML = `<input type="number" class="break-inp" step="0.5" min="0" max="12" placeholder="0" value="" oninput="mgrLive('${ds}','breakHours',this.value)">`;
-      }
-    }
-  }
-
-  // 合計を更新
-  const {total, totalOT} = calcPeriod(mgrEmpId);
-  const sal = isShain ? 0 : total * (emp ? emp.hourlyRate : 0);
-  if(q('mgr-total-h'))  q('mgr-total-h').textContent  = fmtH(total);
-  if(q('mgr-total-s'))  q('mgr-total-s').textContent  = fmtY(sal);
-  if(q('mgr-total-ot')) q('mgr-total-ot').textContent = fmtH(totalOT);
-  if(q('mgr-foot-h'))   q('mgr-foot-h').textContent   = fmtH(total);
-  if(q('mgr-foot-s'))   q('mgr-foot-s').textContent   = fmtY(sal);
-  if(q('mgr-foot-ot'))  q('mgr-foot-ot').textContent  = fmtH(totalOT);
+function mgrLive(ds,field,value){
+  setEntry(mgrEmpId,ds,field,value);
+  if(field==='note')return;
+  const {rows,total,totalOT,workedDays,pendingDays}=calcPeriod(mgrEmpId);
+  const row=rows.find(x=>x.ds===ds), q=id=>document.getElementById(id);
+  if(!row)return;
+  if(q('mrs-'+ds))q('mrs-'+ds).textContent=row.rs;
+  if(q('mre-'+ds))q('mre-'+ds).textContent=row.re;
+  if(q('mwh-'+ds))q('mwh-'+ds).textContent=row.wh>0?row.wh.toFixed(2):'-';
+  if(q('mot-'+ds))q('mot-'+ds).textContent=row.ot>0?row.ot.toFixed(2):'-';
+  if(q('brk-'+ds))q('brk-'+ds).placeholder=row.breakHours.toFixed(2);
+  if(q('mgr-total-h'))q('mgr-total-h').textContent=fmtH(total);
+  if(q('mgr-total-ot'))q('mgr-total-ot').textContent=fmtH(totalOT);
+  if(q('mgr-total-days'))q('mgr-total-days').textContent=workedDays+'日';
+  if(q('mgr-foot-h'))q('mgr-foot-h').textContent=fmtH(total);
+  if(q('mgr-foot-days'))q('mgr-foot-days').textContent=workedDays+'日';
+  if(q('mgr-pending'))q('mgr-pending').textContent=pendingDays?' 未完了:'+pendingDays+'日':'';
 }
-
-// =============================================
-// EMPLOYEE SCREEN
-// =============================================
 function renderEmpSelect(){
   const sorted = [...employees].sort((a,b)=>(a.sortOrder??999)-(b.sortOrder??999));
   // hidden select（打刻画面の関数との互換性のため保持）
@@ -1088,6 +1058,7 @@ function updateEmpStatus(){
   document.getElementById('today-date').textContent =
     `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日（${DOW[now.getDay()]}）`;
 
+
   // 未選択の場合はボタン無効・表示リセット
   if(!empId){
     const inEl  = document.getElementById('disp-in');
@@ -1104,6 +1075,7 @@ function updateEmpStatus(){
     return;
   }
 
+
   const e = getEntry(empId, today);
   const inEl  = document.getElementById('disp-in');
   const outEl = document.getElementById('disp-out');
@@ -1112,15 +1084,18 @@ function updateEmpStatus(){
   outEl.textContent = e.end   || '--:--';
   outEl.className   = 'status-time' + (e.end   ? '' : ' empty');
 
+
   let badge='未打刻', cls='badge-none';
   if(e.end)        { badge='退勤済み ✓'; cls='badge-done'; }
   else if(e.start) { badge='出勤中 ●';  cls='badge-in';   }
   document.getElementById('status-badge-wrap').innerHTML =
     `<span class="status-badge ${cls}">${badge}</span>`;
 
+
   document.getElementById('btn-clock-in').disabled  = !!e.start;
   document.getElementById('btn-clock-out').disabled = !e.start || !!e.end;
   document.getElementById('clock-msg').textContent  = '';
+
 
   // 伝達メモを読み込む（社員切り替え時もリセット）
   const noteEl = document.getElementById('emp-note');
@@ -1184,88 +1159,48 @@ function showPunchSuccess(name, type, time){
   }, 1000);
 }
 
+
 // =============================================
 // EMPLOYEE MANAGEMENT
 // =============================================
 function renderMgrEmp(){
-  const sorted = [...employees].sort((a,b)=>(a.sortOrder??999)-(b.sortOrder??999));
-  const rows = sorted.map((emp) => {
-    const isShain = emp.employmentType === '社員';
-    if(editingEmpId===emp.id) return `
-      <tr draggable="true" data-id="${emp.id}">
-        <td class="drag-handle-cell"><span class="drag-handle">⠿</span></t/span></td>
+  const sorted=[...employees].sort((a,b)=>(a.sortOrder??999)-(b.sortOrder??999));
+  const rows=sorted.map(emp=>{
+    if(editingEmpId===emp.id)return `
+      <tr draggable="true" data-id="${emp.id}"><td class="drag-handle-cell"><span class="drag-handle">⠿</span></td>
         <td class="left"><input id="en-${emp.id}" value="${emp.name}" style="width:140px"></td>
         <td><select id="et-${emp.id}">
           <option value="パート" ${emp.employmentType==='パート'?'selected':''}>パート</option>
-          <option value="社員"   ${emp.employmentType==='社員'?'selected':''}>社員</option>
-        </select></td>
-        <td><input id="er-${emp.id}" type="number" value="${emp.hourlyRate}" style="width:90px" ${isShain?'disabled':''}></td>
-        <td style="text-align:right">
-          <button class="btn-sm btn-save" onclick="saveEmpEdit(${emp.id})">保存</button>
-          <button class="btn-sm" style="background:#f3f4f6;color:#374151;margin-left:4px" onclick="cancelEmpEdit()">キャンセル</button>
-        </td>
-      </tr>`;
-    return `
-      <tr draggable="true" data-id="${emp.id}">
-        <td class="drag-handle-cell"><span class="drag-handle">⠿</span></td>
-        <td class="left">${emp.name}</td>
-        <td>${emp.employmentType||'パート'}</td>
-        <td>${isShain ? '-' : '¥'+emp.hourlyRate.toLocaleString()}</td>
-        <td style="text-align:right">
-          <button class="btn-sm btn-edit" onclick="startEmpEdit(${emp.id})">編集</button>
-          <button class="btn-sm btn-del"  onclick="deleteEmp(${emp.id})" style="margin-left:4px">削除</button>
-        </td>
-      </tr>`;
+          <option value="社員" ${emp.employmentType==='社員'?'selected':''}>社員</option></select></td>
+        <td><select id="eb-${emp.id}">${breakOptions(getDefaultBreakHours(emp))}</select></td>
+        <td style="text-align:right"><button class="btn-sm btn-save" onclick="saveEmpEdit(${emp.id})">保存</button>
+          <button class="btn-sm" style="background:#f3f4f6;color:#374151;margin-left:4px" onclick="cancelEmpEdit()">キャンセル</button></td></tr>`;
+    return `<tr draggable="true" data-id="${emp.id}">
+      <td class="drag-handle-cell"><span class="drag-handle">⠿</span></td><td class="left">${emp.name}</td>
+      <td>${emp.employmentType||'パート'}</td><td>${getDefaultBreakHours(emp)*60}分</td>
+      <td style="text-align:right"><button class="btn-sm btn-edit" onclick="startEmpEdit(${emp.id})">編集</button>
+        <button class="btn-sm btn-del" onclick="deleteEmp(${emp.id})" style="margin-left:4px">削除</button></td></tr>`;
   }).join('');
-
-  document.getElementById('mgr-view-emp').innerHTML = `
-    <div class="emp-mgmt-wrap">
-      <h2 style="font-size:16px;font-weight:bold;margin-bottom:16px">社員管理</h2>
-      <div class="card" style="border-left:4px solid #3b82f6">
-        <h3>🔐 管理者PINの変更</h3>
-        <div class="add-form" style="align-items:flex-end; gap:12px; flex-wrap:wrap">
-          <div class="add-form-field">
-            <label>現在のPIN</label>
-            <input id="pin-current" type="password" maxlength="8" placeholder="現在のPIN" style="width:130px">
-          </div>
-          <div class="add-form-field">
-            <label>新しいPIN</label>
-            <input id="pin-new" type="password" maxlength="8" placeholder="新しいPIN" style="width:130px">
-          </div>
-          <div class="add-form-field">
-            <label>新しいPIN（確認）</label>
-            <input id="pin-new2" type="password" maxlength="8" placeholder="再入力" style="width:130px">
-          </div>
+  document.getElementById('mgr-view-emp').innerHTML=`
+    <div class="emp-mgmt-wrap"><h2 style="font-size:16px;font-weight:bold;margin-bottom:16px">社員管理・昼休憩マスタ</h2>
+      <div class="card" style="border-left:4px solid #3b82f6"><h3>🔐 管理者PINの変更</h3>
+        <div class="add-form" style="align-items:flex-end;gap:12px;flex-wrap:wrap">
+          <div class="add-form-field"><label>現在のPIN</label><input id="pin-current" type="password" maxlength="8" placeholder="現在のPIN" style="width:130px"></div>
+          <div class="add-form-field"><label>新しいPIN</label><input id="pin-new" type="password" maxlength="8" placeholder="新しいPIN" style="width:130px"></div>
+          <div class="add-form-field"><label>新しいPIN（確認）</label><input id="pin-new2" type="password" maxlength="8" placeholder="再入力" style="width:130px"></div>
           <button class="btn btn-primary" onclick="changePin()">変更する</button>
-     (  </div>
-        <div id="pin-change-msg" style="margin-top:10px; font-size:13px; min-height:18px;"></div>
+        </div><div id="pin-change-msg" style="margin-top:10px;font-size:13px;min-height:18px"></div>
       </div>
-      <div class="card">
-        <h3>新規社員追加</h3>
-        <div class="add-form">
-          <div class="add-form-field"><label>氏名</label><input id="new-name" placeholder="例: 田中 太郎" style="width:160px"></div>
-          <div class="add-form-field"><label>雇用形態</label>
-            <select id="new-type">
-              <option value="パート">パート</option>
-              <option value="社員">社員</option>
-            </select>
-          </div>
-          <div class="add-form-field"><label>時給（円）</label><input id="new-rate" type="number" placeholder="1000" style="width:100px"></div>
-          <button class="btn btn-primary" onclick="addEmp()">追加</button>
-        </div>
-      </div>
-      <div class="card" style="padding:0">
-        <table>
-          <thead><tr>
-            <th style="width:32px"></th>
-            <th class="left" style="padding:10px 16px">氏名</th>
-            <th class="left">雇用形態</th>
-            <th class="left">時給</th>
-            <th style="text-align:right;padding-right:16px">操作</th>
-          </tr></thead>
-          <tbody>${rows}</tbody>
-        </table>
-      </div>
+      <div class="card"><h3>新規社員追加</h3><div class="add-form">
+        <div class="add-form-field"><label>氏名</label><input id="new-name" placeholder="例: 田中 太郎" style="width:160px"></div>
+        <div class="add-form-field"><label>雇用形態</label><select id="new-type"><option value="パート">パート</option><option value="社員">社員</option></select></div>
+        <div class="add-form-field"><label>昼休憩（全日勤務時）</label><select id="new-break">${breakOptions(0)}</select></div>
+        <button class="btn btn-primary" onclick="addEmp()">追加</button>
+      </div></div>
+      <div class="card" style="padding:0"><table><thead><tr><th style="width:32px"></th>
+        <th class="left" style="padding:10px 16px">氏名</th><th class="left">雇用形態</th><th class="left">昼休憩</th>
+        <th style="text-align:right;padding-right:16px">操作</th></tr></thead><tbody>${rows}</tbody></table></div>
+      <div class="footer-note"><span>* 既存のパートさんは従来の60分が初期値です。昼休憩なしの方は「なし（0分）」へ変更してください。</span></div>
     </div>`;
   initEmpDrag();
 }
@@ -1320,6 +1255,7 @@ function changePin(){
   const newPin2 = document.getElementById('pin-new2').value;
   const msgEl   = document.getElementById('pin-change-msg');
 
+
   if(current !== MANAGER_PIN){
     msgEl.style.color = '#dc2626';
     msgEl.textContent = '❌ 現在のPINが正しくありません';
@@ -1346,27 +1282,25 @@ function changePin(){
   setTimeout(()=>{ msgEl.textContent = ''; }, 4000);
 }
 function addEmp(){
-  const name = document.getElementById('new-name').value.trim();
-  const type = document.getElementById('new-type').value;
-  const rate = parseInt(document.getElementById('new-rate').value)||1000;
-  if(!name){ alert('氏名を入力してください'); return; }
-  const maxOrder = employees.reduce((m,e)=>Math.max(m,e.sortOrder??0),0);
-  employees.push({id:nextId++, name, hourlyRate:rate, employmentType:type, sortOrder:maxOrder+1});
-  saveEmployees();
-  document.getElementById('new-name').value = '';
-  document.getElementById('new-rate').value = '';
-  renderMgrSidebar(); renderMgrEmp();
+  const name=document.getElementById('new-name').value.trim();
+  const type=document.getElementById('new-type').value;
+  const defaultBreakHours=Number(document.getElementById('new-break').value);
+  if(!name){alert('氏名を入力してください');return;}
+  const maxOrder=employees.reduce((m,e)=>Math.max(m,e.sortOrder??0),0);
+  employees.push({id:nextId++,name,employmentType:type,defaultBreakHours,sortOrder:maxOrder+1});
+  saveEmployees();document.getElementById('new-name').value='';
+  renderMgrSidebar();renderMgrEmp();renderEmpSelect();
 }
 function startEmpEdit(id){ editingEmpId=id; renderMgrEmp(); }
 function cancelEmpEdit(){ editingEmpId=null; renderMgrEmp(); }
 function saveEmpEdit(id){
-  const name = document.getElementById(`en-${id}`).value.trim();
-  const type = document.getElementById(`et-${id}`).value;
-  const rate = parseInt(document.getElementById(`er-${id}`).value)||0;
-  if(!name){ alert('氏名を入力してください'); return; }
-  employees = employees.map(e => e.id===id ? {...e, name, hourlyRate:rate, employmentType:type} : e);
-  saveEmployees();
-  editingEmpId=null; renderMgrSidebar(); renderMgrEmp();
+  const name=document.getElementById('en-'+id).value.trim();
+  const type=document.getElementById('et-'+id).value;
+  const defaultBreakHours=Number(document.getElementById('eb-'+id).value);
+  if(!name){alert('氏名を入力してください');return;}
+  employees=employees.map(e=>e.id===id?{...e,name,employmentType:type,defaultBreakHours}:e);
+  saveEmployees();editingEmpId=null;renderMgrSidebar();renderMgrEmp();renderEmpSelect();
+  if(mgrCurrentTab==='data')renderMgrData();
 }
 function deleteEmp(id){
   if(!confirm('この社員を削除しますか？')) return;
@@ -1394,6 +1328,7 @@ function moveEmpDown(id){
   saveEmployees(); renderMgrEmp(); renderEmpSelect();
 }
 
+
 // =============================================
 // DATA CLEAR
 // =============================================
@@ -1412,107 +1347,38 @@ function clearPeriodData(){
   alert(`✅ ${pl} のデータを削除しました。`);
 }
 
+
 // =============================================
 // EXCEL EXPORT (修正①②＋備考列)
 // =============================================
 function exportExcel(){
   try{
-    const wb   = XLSX.utils.book_new();
-    const pl   = periodLabel(mgrYear, mgrMonth);
-    const days = getDays(mgrYear, mgrMonth);
-    const summary = [];
-
+    const wb=XLSX.utils.book_new(),pl=periodLabel(mgrYear,mgrMonth);
+    const summary=[['勤怠集計サマリー'],['集計期間',pl],[],
+      ['氏名','雇用形態','勤務日数','合計稼働時間(h)','18時以降(h) ※参考','打刻未完了(日)']];
     employees.forEach(emp=>{
-      const isShain = emp.employmentType === '社員';
-
-      if(isShain){
-        // 社員シート: 残業時間列あり、休憩なし
-        const wsData = [
-          ['勤怠集計表'],
-          ['集計期間', pl, '', '氏名', emp.name, '', '雇用形態', '社員'],
-          [],
-          ['日付','曜日','出勤時間','丸め後出勤','退勤時間','丸め後退勤','稼働時間(h)','残業時間(h)','備考'],
-        ];
-        let tot=0, totOT=0;
-        days.forEach(d=>{
-          const ds  = isoDate(d);
-          const e   = getEntry(emp.id, ds);
-          const rs  = ceilTo30(e.start), re = floorTo30(e.end);
-          const wh  = e.start&&e.end ? Math.max(0, diffH(rs,re)) : 0;
-          const ot  = calcOvertimeH(re);
-          tot += wh; totOT += ot;
-          wsData.push([
-            `${d.getMonth()+1}/${d.getDate()}`, DOW[d.getDay()],
-            e.start||'', rs||'', e.end||'', re||'',
-            wh>0 ? Math.round(wh*100)/100 : '',
-            ot>0 ? Math.round(ot*100)/100 : '',
-            e.note||'',
-          ]);
-        });
-        wsData.push([]);
-        wsData.push(['','','','','','合計稼働時間', Math.round(tot*100)/100,'','']);
-        wsData.push(['','','','','','合計残業時間','',Math.round(totOT*100)/100,'']);
-        const ws = XLSX.utils.aoa_to_sheet(wsData);
-        ws['!cols'] = [{wch:8},{wch:4},{wch:10},{wch:10},{wch:10},{wch:10},{wch:12},{wch:12},{wch:24}];
-        XLSX.utils.book_append_sheet(wb, ws, emp.name.slice(0,31));
-        summary.push({name:emp.name, type:'社員', rate:0, hours:Math.round(tot*100)/100, salary:null, otHours:Math.round(totOT*100)/100});
-      } else {
-        // パートシート: 休憩（全日自動1h）・給与あり
-        const wsData = [
-          ['勤怠集計表'],
-          ['集計期間', pl, '', '氏名', emp.name, '', '時給', `¥${emp.hourlyRate.toLocaleString()}`],
-          [],
-          ['日付','曜日','出勤時間','丸め後出勤','退勤時間','丸め後退勤','休憩(h)','稼働時間(h)','備考'],
-        ];
-        let tot=0;
-        days.forEach(d=>{
-          const ds   = isoDate(d);
-          const e    = getEntry(emp.id, ds);
-          const rs   = ceilTo30(e.start), re = floorTo30(e.end);
-          const autoB = isFullDay(e.start, e.end);
-          const brk  = autoB ? 1 : (parseFloat(e.breakHours)||0);
-          const wh   = e.start&&e.end ? Math.max(0, diffH(rs,re)-brk) : 0;
-          tot += wh;
-          wsData.push([
-            `${d.getMonth()+1}/${d.getDate()}`, DOW[d.getDay()],
-            e.start||'', rs||'', e.end||'', re||'',
-            autoB ? '1.00(自動)' : (brk>0 ? brk : ''),
-            wh>0 ? Math.round(wh*100)/100 : '',
-            e.note||'',
-          ]);
-        });
-        wsData.push([]);
-        wsData.push(['','','','','','合計稼働時間','',Math.round(tot*100)/100,'']);
-        wsData.push(['','','','','','給与（税前）','',`¥${Math.round(tot*emp.hourlyRate).toLocaleString()}`,'']);
-        const ws = XLSX.utils.aoa_to_sheet(wsData);
-        ws['!cols'] = [{wch:8},{wch:4},{wch:10},{wch:10},{wch:10},{wch:10},{wch:10},{wch:12},{wch:24}];
-        XLSX.utils.book_append_sheet(wb, ws, emp.name.slice(0,31));
-        summary.push({name:emp.name, type:'パート', rate:emp.hourlyRate, hours:Math.round(tot*100)/100, salary:Math.round(tot*emp.hourlyRate), otHours:null});
-      }
+      const {rows,total,totalOT,workedDays,pendingDays}=calcPeriod(emp.id);
+      const isShain=emp.employmentType==='社員';
+      const wsData=[['勤怠集計表'],['集計期間',pl,'','氏名',emp.name,'','雇用形態',emp.employmentType],
+        ['勤務日数',workedDays,'稼働時間(h)',Math.round(total*100)/100,'','打刻未完了(日)',pendingDays],[],
+        ['日付','曜日','出勤時間','丸め後出勤','退勤時間','丸め後退勤','休憩(h)','稼働時間(h)','18時以降(h) ※参考','備考']];
+      rows.forEach(r=>wsData.push([`${r.d.getMonth()+1}/${r.d.getDate()}`,DOW[r.d.getDay()],
+        r.start||'',r.rs||'',r.end||'',r.re||'',r.complete?r.breakHours:'',
+        r.complete?Math.round(r.wh*100)/100:'',isShain&&r.complete?Math.round(r.ot*100)/100:'',r.note||'']));
+      wsData.push([],['合計','','','','','','',Math.round(total*100)/100,
+        isShain?Math.round(totalOT*100)/100:'','']);
+      const ws=XLSX.utils.aoa_to_sheet(wsData);
+      ws['!cols']=[{wch:8},{wch:4},{wch:11},{wch:12},{wch:11},{wch:12},{wch:10},{wch:13},{wch:21},{wch:30}];
+      const sheetName=(emp.name+'_'+emp.id).replace(/[\/?*\[\]:]/g,'_').slice(0,31);
+      XLSX.utils.book_append_sheet(wb,ws,sheetName);
+      summary.push([emp.name,emp.employmentType,workedDays,Math.round(total*100)/100,
+        isShain?Math.round(totalOT*100)/100:'',pendingDays]);
     });
-
-    // サマリーシート
-    const sw = [
-      ['勤怠集計サマリー'],
-      ['集計期間', pl],
-      [],
-      ['氏名','雇用形態','時給','合計稼働時間(h)','残業時間(h)','給与（税前）'],
-    ];
-    let grandTotal = 0;
-    summary.forEach(s=>{
-      const rateStr   = s.type==='社員' ? '-' : `¥${s.rate.toLocaleString()}`;
-      const salStr    = s.type==='社員' ? '-' : `¥${s.salary.toLocaleString()}`;
-      const otStr     = s.type==='社員' ? s.otHours : '-';
-      sw.push([s.name, s.type, rateStr, s.hours, otStr, salStr]);
-      if(s.salary) grandTotal += s.salary;
-    });
-    sw.push([],[,'','','','給与合計', `¥${grandTotal.toLocaleString()}`]);
-    const wsSum = XLSX.utils.aoa_to_sheet(sw);
-    wsSum['!cols'] = [{wch:16},{wch:8},{wch:10},{wch:16},{wch:12},{wch:14}];
-    XLSX.utils.book_append_sheet(wb, wsSum, 'サマリー');
-
-    XLSX.writeFile(wb, `勤怠集計_${mgrYear}年${mgrMonth}月25日締め.xlsx`);
-  } catch(err){ alert('Excel出力エラー: '+err.message); console.error(err); }
+    const wsSum=XLSX.utils.aoa_to_sheet(summary);
+    wsSum['!cols']=[{wch:18},{wch:10},{wch:12},{wch:18},{wch:23},{wch:17}];
+    XLSX.utils.book_append_sheet(wb,wsSum,'サマリー');
+    XLSX.writeFile(wb,`勤怠集計_${mgrYear}年${mgrMonth}月25日締め.xlsx`);
+  }catch(err){alert('Excel出力エラー: '+err.message);console.error(err);}
 }
 
 // =============================================
@@ -1521,6 +1387,7 @@ function exportExcel(){
 loadEmployees();
 loadEntries();
 if(employees.length) mgrEmpId = employees[0].id;
+
 
 // Firebase リアルタイム同期開始（設定済みの場合）
 startFirebaseSync();
