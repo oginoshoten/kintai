@@ -846,6 +846,26 @@ function breakOptions(value){
     .map(([v,label])=>`<option value="${v}" ${Number(value)===v?'selected':''}>${label}</option>`).join('');
 }
 
+// 規定休日日数は締め月ごとに管理。未設定の月は推測しない。
+const SCHEDULED_LEAVE_DAYS=Object.freeze({
+  '2026-11':9,'2026-12':8,'2027-01':10,'2027-02':9,
+  '2027-03':8,'2027-04':9,'2027-05':9,'2027-06':9
+});
+function calcEmployeeLeave(rows,year,month,today=todayIso()){
+  const previous=rows.filter(row=>row.ds<today);
+  const quota=SCHEDULED_LEAVE_DAYS[year+'-'+padZ(month)]??null;
+  const restDays=previous.filter(row=>!row.start&&!row.end).length;
+  const pending=previous.filter(row=>Boolean(row.start)!==Boolean(row.end)).length;
+  return {quota,restDays,excess:quota===null?null:Math.max(0,restDays-quota),
+    pending,inProgress:previous.length<rows.length};
+}
+function leaveInfo(leave){
+  if(!leave) return '';
+  if(leave.quota===null) return '規定休：未設定 ／ 休み候補：'+leave.restDays+'日 ／ 有給扱い候補：算出なし';
+  const provisional=leave.inProgress||leave.pending;
+  return '規定休：'+leave.quota+'日 ／ 休み候補：'+leave.restDays+'日 ／ 有給扱い候補：'+leave.excess+'日'
+    +(provisional?'（暫定）':'');
+}
 function calcPeriod(empId){
   const emp = employees.find(e=>e.id===empId);
   const isShain = emp && emp.employmentType === '社員';
@@ -866,7 +886,8 @@ function calcPeriod(empId){
     return {d,ds,start,end,rs,re,wh,ot,breakHours:brk,
       manualBreak:manuallySet?String(e.breakHours):'',note:e.note||'',complete};
   });
-  return {rows,total,totalOT,workedDays,pendingDays};
+  const leave=isShain?calcEmployeeLeave(rows,mgrYear,mgrMonth):null;
+  return {rows,total,totalOT,workedDays,pendingDays,leave};
 }
 function goTop(){
   document.getElementById('screen-name').style.display = 'none';
@@ -956,7 +977,7 @@ function renderMgrData(){
   const emp = employees.find(e=>e.id===mgrEmpId);
   if(!emp){document.getElementById('mgr-view-data').innerHTML='<p>社員を選択してください</p>';return;}
   const isShain=emp.employmentType==='社員';
-  const {rows,total,totalOT,workedDays,pendingDays}=calcPeriod(mgrEmpId);
+  const {rows,total,totalOT,workedDays,pendingDays,leave}=calcPeriod(mgrEmpId);
   const pl=periodLabel(mgrYear,mgrMonth);
   const headerExtra=isShain
     ? '<th>稼働時間(h)</th><th style="color:#dc2626">18時以降(h)</th>'
@@ -1004,7 +1025,7 @@ function renderMgrData(){
     <button class="btn" style="background:#dc2626;color:white;margin-left:8px" onclick="clearPeriodData()">🗑️ 当期データ削除</button></div>
     <div class="${isShain?'emp-banner shain':'emp-banner'}">
       <div><span class="banner-name">${emp.name}</span>${bannerTagHtml}</div>
-      <div class="banner-totals">${bannerRight}</div>
+      <div class="banner-totals">${bannerRight}${isShain?`<div id="mgr-leave-info">${leaveInfo(leave)}</div>`:''}</div>
     </div>
     <div class="table-wrap"><table><thead><tr>
       <th class="left">日付</th><th>曜</th><th>出勤時間</th><th style="color:#1d4ed8">丸め後</th>
@@ -1014,13 +1035,13 @@ function renderMgrData(){
      <span>* 出勤は30分単位で切り上げ／退勤は30分単位で切り捨て（従来のルール）</span>
      <span>* 昼休憩は個人マスタから設定（全日勤務時）。各日で上書きできます</span>
      <span>* 勤務日数は出勤・退勤がそろった日を1日と数え、打刻漏れは未完了として別表示</span>
-     ${isShain?'<span>* 18時以降は法定時間外労働の集計とは異なります</span>':''}
+     ${isShain?'<span>* 18時以降は法定時間外労働の集計とは異なります</span><span>* 休み候補は昨日までの出退勤の打刻が両方ない日です。片側の打刻漏れは除外。打刻が両方漏れていないか、有給確定前に確認してください。</span>':''}
     </div>`;
 }
 function mgrLive(ds,field,value){
   setEntry(mgrEmpId,ds,field,value);
   if(field==='note')return;
-  const {rows,total,totalOT,workedDays,pendingDays}=calcPeriod(mgrEmpId);
+  const {rows,total,totalOT,workedDays,pendingDays,leave}=calcPeriod(mgrEmpId);
   const row=rows.find(x=>x.ds===ds), q=id=>document.getElementById(id);
   if(!row)return;
   if(q('mrs-'+ds))q('mrs-'+ds).textContent=row.rs;
@@ -1031,6 +1052,7 @@ function mgrLive(ds,field,value){
   if(q('mgr-total-h'))q('mgr-total-h').textContent=fmtH(total);
   if(q('mgr-total-ot'))q('mgr-total-ot').textContent=fmtH(totalOT);
   if(q('mgr-total-days'))q('mgr-total-days').textContent=workedDays+'日';
+  if(q('mgr-leave-info'))q('mgr-leave-info').textContent=leaveInfo(leave);
   if(q('mgr-foot-h'))q('mgr-foot-h').textContent=fmtH(total);
   if(q('mgr-foot-days'))q('mgr-foot-days').textContent=workedDays+'日';
   if(q('mgr-pending'))q('mgr-pending').textContent=pendingDays?' 未完了:'+pendingDays+'日':'';
@@ -1354,40 +1376,84 @@ function clearPeriodData(){
 function exportExcel(){
   try{
     const wb=XLSX.utils.book_new(),pl=periodLabel(mgrYear,mgrMonth);
-    // サマリーは最初のタブに表示。全員の勤務日数・実働時間だけを掲載する。
+    // Excel出力だけ、対象社員を先頭に並べる。アプリ内の社員順は変更しない。
+    const exportPriority = emp => {
+      if(emp.employmentType!=='社員') return 2;
+      const name=String(emp.name).replace(/\s/g,'');
+      if(name==='笠原未緒'||name==='笠原') return 0;
+      if(name==='松崎冴子'||name==='松崎') return 1;
+      return 2;
+    };
+    const exportEmployees=[...employees].sort((a,b)=>exportPriority(a)-exportPriority(b));
     const summary=[
       ['勤怠集計サマリー'],
       ['集計期間',pl],
-      [],
-      ['氏名','勤務日数（日）','実働時間（h）']
+      ['休み候補は昨日までの両方未打刻日（片側未打刻は除外）。有給確定前に打刻をご確認ください。'],
+      ['氏名','勤務日数（日）','実働時間（h）','残業時間（h・18時以降、参考）','規定休（日）','休み候補（日）','有給扱い候補（日）','休み集計の状態','交通費（円）']
     ];
-    let allDays=0,allHours=0;
+    let allDays=0,allHours=0,allOT=0,allTransport=0;
     const detailSheets=[];
-    employees.forEach(emp=>{
-      const {rows,total,totalOT,workedDays,pendingDays}=calcPeriod(emp.id);
+    exportEmployees.forEach(emp=>{
+      const {rows,total,totalOT,workedDays,pendingDays,leave}=calcPeriod(emp.id);
       const isShain=emp.employmentType==='社員';
       const roundedHours=Math.round(total*100)/100;
-      summary.push([emp.name,workedDays,roundedHours]);
+      const priority=exportPriority(emp);
+      const includeOT=priority<2;
+      const transportRate=priority===0?260:priority===1?80:null;
+      const transport=transportRate===null?null:workedDays*transportRate;
+      const roundedOT=Math.round(totalOT*100)/100;
+      const leaveStatus=leave?(leave.quota===null?'規定休未設定':leave.inProgress||leave.pending?'暫定・要確認':'要確認'):'';
+      const summaryRow=[emp.name,workedDays,roundedHours,includeOT?roundedOT:null];
+      if(leave) summaryRow.push(leave.quota,leave.restDays,leave.excess,leaveStatus,transport);
+      summary.push(summaryRow);
+      if(transport!==null) allTransport+=transport;
       allDays+=workedDays;
-      allHours+=total;
+      allHours+=roundedHours;
+      if(includeOT) allOT+=roundedOT;
 
       // 個人別の詳細シートは従来どおり残す。
       const wsData=[['勤怠集計表'],['集計期間',pl,'','氏名',emp.name,'','雇用形態',emp.employmentType],
-        ['勤務日数',workedDays,'稼働時間(h)',roundedHours,'','打刻未完了(日)',pendingDays],[],
+        ['勤務日数',workedDays,'稼働時間(h)',roundedHours,'','打刻未完了(日)',pendingDays],
+        leave?['規定休(日)',leave.quota===null?'未設定':leave.quota,'休み候補(日)',leave.restDays,'有給扱い候補(日)',leave.excess,'状態',leaveStatus]:[],
         ['日付','曜日','出勤時間','丸め後出勤','退勤時間','丸め後退勤','休憩(h)','稼働時間(h)','18時以降(h) ※参考','備考']];
       rows.forEach(r=>wsData.push([`${r.d.getMonth()+1}/${r.d.getDate()}`,DOW[r.d.getDay()],
         r.start||'',r.rs||'',r.end||'',r.re||'',r.complete?r.breakHours:'',
         r.complete?Math.round(r.wh*100)/100:'',isShain&&r.complete?Math.round(r.ot*100)/100:'',r.note||'']));
       wsData.push([],['合計','','','','','','',roundedHours,
-        isShain?Math.round(totalOT*100)/100:'','']);
+        isShain?roundedOT:'','']);
+      if(transportRate!==null){
+        wsData[2].push('交通費日額(円)',transportRate,'交通費合計(円)',transport);
+      }
       const ws=XLSX.utils.aoa_to_sheet(wsData);
+      if(leave&&leave.quota!==null) ws.F4.f='MAX(0,D4-B4)';
+      if(transportRate!==null) ws.K3.f='B3*I3';
       ws['!cols']=[{wch:8},{wch:4},{wch:11},{wch:12},{wch:11},{wch:12},{wch:10},{wch:13},{wch:21},{wch:30}];
+      if(transportRate!==null){ws['!cols'][7].wch=18;ws['!cols'].push({wch:17});}
       const sheetName=(emp.name+'_'+emp.id).replace(/[\/?*\[\]:]/g,'_').slice(0,31);
-      detailSheets.push({name:sheetName,sheet:ws});
+      detailSheets.push({name:sheetName,sheet:ws,includeOT,leave,transportRate,totalRow:wsData.length});
     });
-    summary.push(['合計',allDays,Math.round(allHours*100)/100]);
+    summary.push(['合計',allDays,Math.round(allHours*100)/100,Math.round(allOT*100)/100,null,null,null,null,allTransport]);
     const wsSum=XLSX.utils.aoa_to_sheet(summary);
-    wsSum['!cols']=[{wch:22},{wch:18},{wch:20}];
+    detailSheets.forEach(({name,includeOT,leave,transportRate,totalRow},i)=>{
+      const row=i+5, ref="'"+name.replace(/'/g,"''")+"'!";
+      // 数値の初期表示を保持しつつ、Excelでは個人シートの集計値を参照する。
+      wsSum['B'+row].f=ref+'$B$3';
+      wsSum['C'+row].f=ref+'$D$3';
+      if(includeOT) wsSum['D'+row].f=ref+'$I$'+totalRow;
+      if(transportRate!==null) wsSum['I'+row].f=ref+'$K$3';
+      if(leave) wsSum['F'+row].f=ref+'$D$4';
+      if(leave&&leave.quota!==null){
+        wsSum['E'+row].f=ref+'$B$4';
+        wsSum['G'+row].f=ref+'$F$4';
+      }
+    });
+    const totalRow=summary.length;
+    const sumOf=col=>detailSheets.length?'SUM('+col+'5:'+col+(totalRow-1)+')':'SUM(0)';
+    wsSum['B'+totalRow].f=sumOf('B');
+    wsSum['C'+totalRow].f='ROUND('+sumOf('C')+',2)';
+    wsSum['D'+totalRow].f='ROUND('+sumOf('D')+',2)';
+    wsSum['I'+totalRow].f=sumOf('I');
+    wsSum['!cols']=[{wch:22},{wch:18},{wch:20},{wch:38},{wch:14},{wch:16},{wch:22},{wch:17},{wch:15}];
     XLSX.utils.book_append_sheet(wb,wsSum,'サマリー');
     detailSheets.forEach(({name,sheet})=>XLSX.utils.book_append_sheet(wb,sheet,name));
     XLSX.writeFile(wb,`勤怠集計_${mgrYear}年${mgrMonth}月25日締め.xlsx`);
