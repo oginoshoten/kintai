@@ -1373,23 +1373,99 @@ function clearPeriodData(){
 // =============================================
 // EXCEL EXPORT (修正①②＋備考列)
 // =============================================
+// SheetJS CE writes the values and formulas. Add the print layout and styles
+// to the first worksheet only; no changes to the individual worksheet XML.
+function makePrintableAttendanceXlsx(wb,lastRow){
+  const zip=XLSX.CFB.read(new Uint8Array(XLSX.write(wb,{bookType:'xlsx',type:'array'})),{type:'array'});
+  const decoder=new TextDecoder(),encoder=new TextEncoder();
+  function changeXml(path,edit){
+    const item=XLSX.CFB.find(zip,'/'+path);
+    if(!item) throw new Error('Excelの印刷設定を作成できません: '+path);
+    const xml=decoder.decode(item.content);
+    const result=edit(xml);
+    if(result===xml) throw new Error('Excelの印刷設定を作成できません: '+path);
+    item.content=encoder.encode(result);
+    item.size=item.content.length;
+  }
+  function extendStyles(xml,tag,entries){
+    const re=new RegExp('<'+tag+' count="([0-9]+)">([\\s\\S]*?)</'+tag+'>');
+    const match=xml.match(re);
+    if(!match) throw new Error('Excelの書式設定が見つかりません: '+tag);
+    const start=Number(match[1]);
+    return [xml.replace(re,()=>'<'+tag+' count="'+(start+entries.length)+'">'+match[2]+entries.join('')+'</'+tag+'>'),start];
+  }
+  let formatStart;
+  changeXml('xl/styles.xml',xml=>{
+    const font=(size,color,bold=false)=>'<font>'+(bold?'<b/>':'')+'<sz val="'+size+'"/><color rgb="FF'+color+'"/><name val="Meiryo"/><family val="2"/></font>';
+    const fill=color=>'<fill><patternFill patternType="solid"><fgColor rgb="FF'+color+'"/><bgColor indexed="64"/></patternFill></fill>';
+    const border=color=>'<border><left/><right/><top/><bottom style="thin"><color rgb="FF'+color+'"/></bottom><diagonal/></border>';
+    let f,p,b;
+    [xml,f]=extendStyles(xml,'fonts',[font(22,'FFFFFF',true),font(12,'164C50',true),font(9,'3F546A'),font(10,'FFFFFF',true),font(10,'182D40'),font(11,'FFFFFF',true)]);
+    [xml,p]=extendStyles(xml,'fills',['16344D','DDF1EE','EEF3F8','236C70','FFFFFF','F1F7FA','214965'].map(fill));
+    [xml,b]=extendStyles(xml,'borders',[border('D9E5EC')]);
+    const xf=(fontId,fillId,borderId,numFmtId,align,indent=0,wrap=false)=>'<xf numFmtId="'+numFmtId+'" fontId="'+fontId+'" fillId="'+fillId+'" borderId="'+borderId+'" xfId="0" applyNumberFormat="1" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="'+align+'" vertical="center"'+(indent?' indent="'+indent+'"':'')+(wrap?' wrapText="1"':'')+'/></xf>';
+    const block=[
+      xf(f,p,0,0,'left',1),xf(f+1,p+1,0,0,'left',1),xf(f+2,p+2,0,0,'left',1,true),
+      xf(f+3,p+3,0,0,'center',0,true)
+    ];
+    for(const stripe of [p+4,p+5]){
+      block.push(xf(f+4,stripe,b,0,'left',1),xf(f+4,stripe,b,1,'right',1),
+        xf(f+4,stripe,b,2,'right',1),xf(f+4,stripe,b,0,'center'),xf(f+4,stripe,b,3,'right',1));
+    }
+    block.push(xf(f+5,p+6,0,0,'left',1),xf(f+5,p+6,0,1,'right',1),
+      xf(f+5,p+6,0,2,'right',1),xf(f+5,p+6,0,0,'center'),xf(f+5,p+6,0,3,'right',1));
+    [xml,formatStart]=extendStyles(xml,'cellXfs',block);
+    return xml;
+  });
+  changeXml('xl/worksheets/sheet1.xml',xml=>{
+    const styleFor=(r,col)=>{
+      if(r<=4) return r-1;
+      const style=col==='A'?0:(col==='C'||col==='D')?2:col==='H'?3:col==='I'?4:1;
+      return (r===lastRow?14:(r%2?4:9))+style;
+    };
+    xml=xml.replace(/<c r="([A-I])([0-9]+)"([^>]*)(\/?)>/g,(whole,col,row,attrs,slash)=>{
+      const tail=attrs.endsWith('/')?'/':slash;
+      const clean=tail&&attrs.endsWith('/')?attrs.slice(0,-1):attrs;
+      return '<c r="'+col+row+'" s="'+(formatStart+styleFor(Number(row),col))+'"'+clean+tail+'>';
+    });
+    return xml.replace('<dimension','<sheetPr><pageSetUpPr fitToPage="1"/></sheetPr><dimension')
+      .replace('<sheetView workbookViewId="0"','<sheetView showGridLines="0" workbookViewId="0"')
+      .replace('<ignoredErrors>','<printOptions horizontalCentered="1"/><pageMargins left="0.35" right="0.35" top="0.38" bottom="0.38" header="0.15" footer="0.15"/><pageSetup paperSize="9" orientation="landscape" fitToWidth="1" fitToHeight="1"/><ignoredErrors>');
+  });
+  changeXml('xl/workbook.xml',xml=>{
+    const printArea='<definedName name="_xlnm.Print_Area" localSheetId="0">&apos;サマリー&apos;!$A$1:$I$'+lastRow+'</definedName>';
+    return xml.includes('</definedNames>') ? xml.replace('</definedNames>',printArea+'</definedNames>')
+      : xml.replace('</sheets>','</sheets><definedNames>'+printArea+'</definedNames>');
+  });
+  return XLSX.CFB.write(zip,{fileType:'zip',type:'array',compression:true});
+}
+function downloadAttendanceXlsx(wb,lastRow,filename){
+  const bytes=makePrintableAttendanceXlsx(wb,lastRow);
+  const url=URL.createObjectURL(new Blob([bytes],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}));
+  const link=document.createElement('a');
+  link.href=url;
+  link.download=filename;
+  document.body.appendChild(link);
+  try{link.click();}finally{link.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);}
+}
 function exportExcel(){
   try{
     const wb=XLSX.utils.book_new(),pl=periodLabel(mgrYear,mgrMonth);
     // Excel出力だけ、対象社員を先頭に並べる。アプリ内の社員順は変更しない。
-    const exportPriority = emp => {
-      if(emp.employmentType!=='社員') return 2;
+    const employeeExportRules = emp => {
+      if(emp.employmentType!=='社員') return null;
       const name=String(emp.name).replace(/\s/g,'');
-      if(name==='笠原未緒'||name==='笠原') return 0;
-      if(name==='松崎冴子'||name==='松崎') return 1;
-      return 2;
+      if(name==='松崎冴子'||name==='松崎') return {rank:0,transportRate:80};
+      if(name==='笠原未緒'||name==='笠原') return {rank:1,transportRate:260};
+      return null;
     };
+    const exportPriority=emp=>employeeExportRules(emp)?.rank??2;
     const exportEmployees=[...employees].sort((a,b)=>exportPriority(a)-exportPriority(b));
     const summary=[
       ['勤怠集計サマリー'],
-      ['集計期間',pl],
+      ['集計期間　'+pl],
       ['休み候補は昨日までの両方未打刻日（片側未打刻は除外）。有給確定前に打刻をご確認ください。'],
-      ['氏名','勤務日数（日）','実働時間（h）','残業時間（h・18時以降、参考）','規定休（日）','休み候補（日）','有給扱い候補（日）','休み集計の状態','交通費（円）']
+      ['氏名','勤務日数（日）','実働時間（h）','残業時間（h）\n18時以降・参考','規定休（日）','休み候補（日）','有給扱い候補（日）','休み集計の状態','交通費（円）']
     ];
     let allDays=0,allHours=0,allOT=0,allTransport=0;
     const detailSheets=[];
@@ -1397,9 +1473,9 @@ function exportExcel(){
       const {rows,total,totalOT,workedDays,pendingDays,leave}=calcPeriod(emp.id);
       const isShain=emp.employmentType==='社員';
       const roundedHours=Math.round(total*100)/100;
-      const priority=exportPriority(emp);
-      const includeOT=priority<2;
-      const transportRate=priority===0?260:priority===1?80:null;
+      const rules=employeeExportRules(emp);
+      const includeOT=rules!==null;
+      const transportRate=rules?.transportRate??null;
       const transport=transportRate===null?null:workedDays*transportRate;
       const roundedOT=Math.round(totalOT*100)/100;
       const leaveStatus=leave?(leave.quota===null?'規定休未設定':leave.inProgress||leave.pending?'暫定・要確認':'要確認'):'';
@@ -1433,7 +1509,8 @@ function exportExcel(){
       detailSheets.push({name:sheetName,sheet:ws,includeOT,leave,transportRate,totalRow:wsData.length});
     });
     summary.push(['合計',allDays,Math.round(allHours*100)/100,Math.round(allOT*100)/100,null,null,null,null,allTransport]);
-    const wsSum=XLSX.utils.aoa_to_sheet(summary);
+    // Blank cells also carry fill styles in the summary, without writing empty strings into formulas.
+    const wsSum=XLSX.utils.aoa_to_sheet(summary.map(row=>Array.from({length:9},(_,col)=>row[col]??'')));
     detailSheets.forEach(({name,includeOT,leave,transportRate,totalRow},i)=>{
       const row=i+5, ref="'"+name.replace(/'/g,"''")+"'!";
       // 数値の初期表示を保持しつつ、Excelでは個人シートの集計値を参照する。
@@ -1453,10 +1530,12 @@ function exportExcel(){
     wsSum['C'+totalRow].f='ROUND('+sumOf('C')+',2)';
     wsSum['D'+totalRow].f='ROUND('+sumOf('D')+',2)';
     wsSum['I'+totalRow].f=sumOf('I');
-    wsSum['!cols']=[{wch:22},{wch:18},{wch:20},{wch:38},{wch:14},{wch:16},{wch:22},{wch:17},{wch:15}];
+    wsSum['!cols']=[22,14,15,18,13,15,18,18,15].map(wch=>({wch}));
+    wsSum['!rows']=summary.map((_,i)=>({hpt:i===0?35:i===1?24:i===2?22:i===3?33:i===totalRow-1?25:18}));
+    wsSum['!merges']=[0,1,2].map(r=>({s:{r,c:0},e:{r,c:8}}));
     XLSX.utils.book_append_sheet(wb,wsSum,'サマリー');
     detailSheets.forEach(({name,sheet})=>XLSX.utils.book_append_sheet(wb,sheet,name));
-    XLSX.writeFile(wb,`勤怠集計_${mgrYear}年${mgrMonth}月25日締め.xlsx`);
+    downloadAttendanceXlsx(wb,totalRow,`勤怠集計_${mgrYear}年${mgrMonth}月25日締め.xlsx`);
   }catch(err){alert('Excel出力エラー: '+err.message);console.error(err);}
 }
 // =============================================
