@@ -1022,7 +1022,16 @@ function renderMgrData(){
         ${Array.from({length:12},(_,i)=>i+1).map(m=>`<option value="${m}" ${m===mgrMonth?'selected':''}>${m}月25日締め</option>`).join('')}</select>
       <span class="period-label">📅 ${pl}</span>
     </div><button class="btn btn-success" onclick="exportExcel()">📥 Excel出力（全社員）</button>
+    <button class="btn btn-success" onclick="exportYayoiCsv()">📥 弥生給与CSV（全社員）</button>
     <button class="btn" style="background:#dc2626;color:white;margin-left:8px" onclick="clearPeriodData()">🗑️ 当期データ削除</button></div>
+    <details style="margin:12px 0;font-size:13px;line-height:1.8"><summary>弥生給与CSVの取込手順・注意</summary>
+      <p>選択中の25日締め期間・全社員の実打刻を1人1日1行で出力します（Shift_JIS／BOMなし）。未打刻・片側打刻・時刻矛盾・未来の記録は除外します。普外時間・残外時間・事由は空欄です。休憩や有給候補は転記しません。交通費・残業・集計値はExcelをご利用ください。</p>
+      <p>弥生給与（デスクトップ）でバックアップ後、タイムカードのテキスト取込を選択。区切りはカンマ、開始行は2行目、時刻は60進法です。列は従業員ID／日付／出勤時刻／退勤時刻／普外時間／残外時間／事由の順に対応させてください。</p>
+      <p>従業員IDには氏名（姓名）を使用します。初回はマッチングリストで「氏名（姓名）」から自動作成し、全員の対応を確認・修正してください。当月度と次月度のみ取込可能です。同じCSVの再取込は警告なく二重登録されるため、取込済みファイルを管理してください。</p>
+      <p>弥生側の給与カレンダー・端数処理・休憩設定によりExcel集計と差が出る場合があります。最初はテスト用事業所データで確認してください。</p>
+      <a href="https://support.yayoi-kk.co.jp/subcontents.html?page_id=24278" target="_blank" rel="noopener">弥生公式の取込手順</a>
+    </details>
+    <pre id="yayoi-result" role="status" style="white-space:pre-wrap;font-size:13px;max-height:240px;overflow:auto"></pre>
     <div class="${isShain?'emp-banner shain':'emp-banner'}">
       <div><span class="banner-name">${emp.name}</span>${bannerTagHtml}</div>
       <div class="banner-totals">${bannerRight}${isShain?`<div id="mgr-leave-info">${leaveInfo(leave)}</div>`:''}</div>
@@ -1448,6 +1457,84 @@ function downloadAttendanceXlsx(wb,lastRow,filename){
   document.body.appendChild(link);
   try{link.click();}finally{link.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);}
 }
+
+// 弥生給与タイムカードCSV。既存の集計・保存処理には触れず実打刻だけを読む。
+let yayoiCp932Map;
+function encodeYayoiCp932(text){
+  if(!yayoiCp932Map){
+    const decoder=new TextDecoder('shift_jis',{fatal:true}), map=new Map();
+    const add=bytes=>{
+      try{
+        const ch=decoder.decode(new Uint8Array(bytes));
+        if([...ch].length===1&&!map.has(ch)) map.set(ch,bytes);
+      }catch(e){ /* 未割当のバイトは使わない */ }
+    };
+    for(let b=0;b<=255;b++) add([b]);
+    for(let lead=0x81;lead<=0xfc;lead++){
+      if(lead>0x9f&&lead<0xe0) continue;
+      for(let trail=0x40;trail<=0xfc;trail++) if(trail!==0x7f) add([lead,trail]);
+    }
+    yayoiCp932Map=map;
+  }
+  const bytes=[];
+  for(const ch of text){
+    const encoded=yayoiCp932Map.get(ch);
+    if(!encoded) throw new Error('Shift_JISに変換できない文字があります: '+ch);
+    bytes.push(...encoded);
+  }
+  return new Uint8Array(bytes);
+}
+function buildYayoiCsv(now=new Date()){
+  const days=getDays(mgrYear,mgrMonth), today=isoDate(now), currentTime=nowStrForYayoi(now);
+  const names=new Set(), ids=new Set(), skipped=[], rows=[];
+  const counts={'打刻なし':0,'片側打刻':0,'時刻矛盾':0,'未来':0};
+  const priority=emp=>emp.employmentType==='社員'?(/^松崎(?:冴子)?$/.test(String(emp.name).replace(/\s/g,''))?0:/^笠原(?:未緒)?$/.test(String(emp.name).replace(/\s/g,''))?1:2):2;
+  const ordered=[...employees].sort((a,b)=>priority(a)-priority(b));
+  for(const emp of ordered){
+    const name=String(emp.name??'').trim(), key=name.replace(/\s/g,'');
+    if(!name||/[\r\n\t\x00-\x1f]/.test(name)) throw new Error('氏名が空欄、または制御文字を含んでいます。社員管理で確認してください。');
+    if(names.has(key)||ids.has(String(emp.id))) throw new Error('氏名または社員IDが重複しています: '+name);
+    names.add(key); ids.add(String(emp.id));
+    if(encodeYayoiCp932(name).length>20) throw new Error('従業員IDの上限（半角20桁）を超える氏名です: '+name);
+    for(const day of days){
+      const ds=isoDate(day), e=getEntry(emp.id,ds), start=e.start||'', end=e.end||'';
+      let reason='';
+      if(ds>today) reason='未来';
+      else if(!start&&!end) reason='打刻なし';
+      else if(!start||!end) reason='片側打刻';
+      else if(!/^([01]\d|2[0-3]):[0-5]\d$/.test(start)||!/^([01]\d|2[0-3]):[0-5]\d$/.test(end)||end<=start) reason='時刻矛盾';
+      else if(ds===today&&(start>currentTime||end>currentTime)) reason='未来';
+      if(reason){
+        counts[reason]++;
+        if(start||end) skipped.push(name+' '+ds+'：'+reason);
+        continue;
+      }
+      rows.push([name,ds.replace(/-/g,'/'),start,end,'','','']);
+    }
+  }
+  const quote=value=>/[",\r\n]/.test(value)?'"'+value.replace(/"/g,'""')+'"':value;
+  const header='従業員ID,日付,出勤時刻,退勤時刻,普外時間,残外時間,事由';
+  const csv=header+'\r\n'+rows.map(row=>row.map(quote).join(',')+'\r\n').join('');
+  return {bytes:encodeYayoiCp932(csv),rows,counts,skipped};
+}
+function nowStrForYayoi(now){ return padZ(now.getHours())+':'+padZ(now.getMinutes()); }
+function exportYayoiCsv(){
+  const status=document.getElementById('yayoi-result');
+  try{
+    const result=buildYayoiCsv();
+    const summary=periodLabel(mgrYear,mgrMonth)+'\n出力対象: '+result.rows.length+'行\n除外: '+Object.entries(result.counts).map(([k,v])=>k+' '+v+'件').join('／');
+    status.textContent=summary+(result.skipped.length?'\n要確認の記録:\n'+result.skipped.join('\n'):'');
+    if(!result.rows.length){alert('出力できる打刻がありません。画面の除外件数を確認してください。');return;}
+    if(!confirm(summary+'\n\n除外記録は画面に表示しています。氏名マッチング・取込前バックアップ・二重登録にご注意ください。CSVを保存しますか？')) return;
+    const url=URL.createObjectURL(new Blob([result.bytes],{type:'text/csv;charset=shift_jis'}));
+    const a=document.createElement('a'); a.href=url;
+    a.download=`弥生給与タイムカード_${mgrYear}年${mgrMonth}月25日締め.csv`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+    status.textContent+='\nCSVのダウンロードを開始しました（弥生給与への取込は未実施）。';
+  }catch(err){status.textContent='CSV出力停止: '+err.message;alert(status.textContent);}
+}
+
 function exportExcel(){
   try{
     const wb=XLSX.utils.book_new(),pl=periodLabel(mgrYear,mgrMonth);
